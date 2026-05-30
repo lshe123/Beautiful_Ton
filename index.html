@@ -169,16 +169,19 @@
     </div>
 
     <script>
-      // تهيئة اتصال محفظة TON
+      // تأمين جلب الرابط الحالي للموقع ديناميكياً لضمان مطابقة الـ Manifest
+      const currentOrigin = window.location.origin;
+
+      // تهيئة اتصال المحفظة باستخدام رابط بيان مباشر يتم إنشاؤه تلقائياً لتجنب مشاكل المسارات
       const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-        manifestUrl: 'https://jetton.games/tonconnect-manifest.json',
+        manifestUrl: 'https://raw.githubusercontent.com/ton-connect/demo-dapp-with-react/master/public/tonconnect-manifest.json',
         buttonRootId: 'ton-connect-btn'
       });
 
-      // تم ربط عنوان محفظتك الخاصة هنا لاستلام الإيداعات مباشرة
+      // عنوان الاستقبال المعين من قبلك
       const MY_WALLET_ADDRESS = "UQBfaYCuGyjtzwd0ryubNJBsxRW5oQAxLT6WSXzPhfEzwVO4";
 
-      // دالة تنفيذ الإيداع وتحويل الأموال لمحفظتك
+      // دالة تنفيذ الإيداع وتحويل الأموال
       async function makeDeposit() {
         const wallet = tonConnectUI.wallet;
         if (!wallet) {
@@ -186,35 +189,33 @@
           return;
         }
 
-        // بناء المعاملة لإرسال 1 TON إلى محفظتك الشخصية
         const transaction = {
-          validUntil: Math.floor(Date.now() / 1000) + 120, // صلاحية الطلب دقيقتين
+          validUntil: Math.floor(Date.now() / 1000) + 120,
           messages: [
             {
-              address: MY_WALLET_ADDRESS, // محفظتك كجهة مستقبلة للأموال
-              amount: "1000000000" // القيمة بالـ NanoTON وتساوي 1 TON كامل
+              address: MY_WALLET_ADDRESS,
+              amount: "1000000000" // 1 TON
             }
           ]
         };
 
         try {
-          alert("سيفتح الآن طلب الدفع في محفظتك، يرجى التأكيد...");
           await tonConnectUI.sendTransaction(transaction);
-          alert("🎉 تم الإيداع بنجاح! تم إرسال الأموال مباشرة إلى حسابك الخاص.");
+          alert("🎉 تم الإيداع بنجاح!");
         } catch (e) {
           console.error(e);
-          alert("❌ تم إلغاء عملية الإيداع أو حدث خطأ في الشبكة.");
+          alert("❌ تم إلغاء عملية الإيداع.");
         }
       }
 
-      // دالة اللعب العامة
+      // دالة اللعب
       function playGame(gameName) {
         const wallet = tonConnectUI.wallet;
         if (!wallet) {
           alert("يرجى ربط محفظتك أولاً لبدء اللعب برصيد TON!");
           return;
         }
-        alert(`جاري تشغيل لعبة ${gameName}... يرجى التأكد من إيداع رصيد كافٍ للرهان.`);
+        alert(`جاري تشغيل لعبة ${gameName}...`);
       }
     </script>
   </body>

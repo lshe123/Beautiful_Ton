@@ -1,5 +1,5 @@
 {
-  "url": "https://your-domain.com",
+  "url": "http://localhost:3000",
   "name": "Jetton Hub",
-  "iconUrl": "https://your-domain.com/logo.png"
+  "iconUrl": "https://ton.org/front/img/ton_logo.svg"
 }

@@ -4,6 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Jetton Games - منصة الألعاب الذكية</title>
+    
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+
     <style>
       body {
         background-color: #090b10;
@@ -26,6 +31,9 @@
         color: #00caec;
         text-transform: uppercase;
         letter-spacing: 1px;
+      }
+      #ton-connect-btn {
+        direction: ltr;
       }
       .hero {
         text-align: center;
@@ -88,7 +96,66 @@
     </style>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="./main.jsx"></script>
+
+    <div class="navbar">
+      <div class="logo">Jetton Games</div>
+      <div id="ton-connect-btn"></div>
+    </div>
+
+    <div class="hero">
+      <h1>العب واربح باستخدام TON</h1>
+      <p>المنصة المفضلة لألعاب الحظ السريعة والعادلة على تليجرام</p>
+    </div>
+
+    <div class="games-grid">
+      <div class="game-card" onclick="playGame('Crash')">
+        <div className="game-icon">🚀</div>
+        <div class="game-title">Crash</div>
+        <div class="game-status">اضرب المضاعف</div>
+      </div>
+
+      <div class="game-card" onclick="playGame('Mines')">
+        <div className="game-icon">💣</div>
+        <div class="game-title">Mines</div>
+        <div class="game-status">تجنب القنابل</div>
+      </div>
+
+      <div class="game-card" onclick="playGame('Roulette')">
+        <div className="game-icon">🎰</div>
+        <div class="game-title">Roulette</div>
+        <div class="game-status">عجلة الحظ</div>
+      </div>
+
+      <div class="game-card" onclick="playGame('Dice')">
+        <div className="game-icon">🎲</div>
+        <div class="game-title">Dice</div>
+        <div class="game-status">توقع الرقم</div>
+      </div>
+    </div>
+
+    <div class="footer-panel">
+      <p>تطبيق Jetton Games تجريبي متصل بشبكة TON البلوكشين</p>
+    </div>
+
+    <script>
+      // تهيئة اتصال محفظة TON الجاهز
+      const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+        manifestUrl: 'https://jetton.games/tonconnect-manifest.json',
+        buttonRootId: 'ton-connect-btn'
+      });
+
+      // دالة الضغط على الألعاب وتحقق الاتصال
+      function playGame(gameName) {
+        const wallet = tonConnectUI.wallet;
+        if (!wallet) {
+          alert("يرجى ربط محفظتك أولاً عبر الزر العلوي لبدء اللعب برصيد TON!");
+          return;
+        }
+        
+        // جلب عنوان المستخدم المربوط للاستخدام
+        const userAddress = wallet.account.address;
+        alert(`جاري تشغيل لعبة ${gameName}...\nالمحفظة المتصلة: ${userAddress.substring(0, 6)}...${userAddress.substring(userAddress.length - 4)}`);
+      }
+    </script>
   </body>
 </html>

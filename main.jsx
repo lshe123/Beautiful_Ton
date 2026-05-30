@@ -37,7 +37,7 @@ function Dashboard() {
         validUntil: Math.floor(Date.now() / 1000) + 60,
         messages: [{ 
           address: "UQBfaYCuGyjtzwd0ryubNJBsxRW5oQAxLT6WSXzPhfEzwVO4", // عنوان حقيقي تجريبي للتست
-          amount: "100000000" // 0.1 TON
+          amount: "100000000" 
         }]
       });
       alert("تم إرسال طلب المعاملة إلى محفظتك!");

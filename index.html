@@ -69,6 +69,7 @@
         font-size: 16px;
         width: 100%;
         margin-top: 10px;
+        transition: background 0.2s;
       }
       .deposit-btn:hover {
         background: #059669;
@@ -132,7 +133,7 @@
     </div>
 
     <div class="deposit-box">
-      <h3 style={{ margin: '0 0 10px 0' }}>إيداع رصيد للعب</h3>
+      <h3 style="margin: 0 0 10px 0; color: #fff;">إيداع رصيد للعب</h3>
       <p style="font-size: 14px; color: #9ca3af; margin: 0 0 15px 0;">سيتم تحويل القيمة مباشرة لحساب المنصة لتعبئة رصيدك</p>
       <button class="deposit-btn" onclick="makeDeposit()">إيداع 1 TON</button>
     </div>
@@ -174,7 +175,7 @@
         buttonRootId: 'ton-connect-btn'
       });
 
-      // ⚠️ ضع عنوان محفظتك الشخصية هنا لاستقبال أموال المودعين ⚠️
+      // تم ربط عنوان محفظتك الخاصة هنا لاستلام الإيداعات مباشرة
       const MY_WALLET_ADDRESS = "UQBfaYCuGyjtzwd0ryubNJBsxRW5oQAxLT6WSXzPhfEzwVO4";
 
       // دالة تنفيذ الإيداع وتحويل الأموال لمحفظتك
@@ -185,18 +186,13 @@
           return;
         }
 
-        if (MY_WALLET_ADDRESS === "UQBfaYCuGyjtzwd0ryubNJBsxRW5oQAxLT6WSXzPhfEzwVO4") {
-          alert("تنبيه للمطور: يجب عليك تعديل الكود ووضع عنوان محفظتك الحقيقي لاستقبال الأموال!");
-          return;
-        }
-
-        // بناء المعاملة لإرسال 1 TON إلى محفظتك
+        // بناء المعاملة لإرسال 1 TON إلى محفظتك الشخصية
         const transaction = {
           validUntil: Math.floor(Date.now() / 1000) + 120, // صلاحية الطلب دقيقتين
           messages: [
             {
-              address: MY_WALLET_ADDRESS, // المستقبل (أنت)
-              amount: "1000000000" // القيمة بالـ NanoTON (تساوي 1 TON كاملاً)
+              address: MY_WALLET_ADDRESS, // محفظتك كجهة مستقبلة للأموال
+              amount: "1000000000" // القيمة بالـ NanoTON وتساوي 1 TON كامل
             }
           ]
         };
@@ -204,7 +200,7 @@
         try {
           alert("سيفتح الآن طلب الدفع في محفظتك، يرجى التأكيد...");
           await tonConnectUI.sendTransaction(transaction);
-          alert("🎉 تم الإيداع بنجاح! وصلت الأموال إلى محفظة المنصة.");
+          alert("🎉 تم الإيداع بنجاح! تم إرسال الأموال مباشرة إلى حسابك الخاص.");
         } catch (e) {
           console.error(e);
           alert("❌ تم إلغاء عملية الإيداع أو حدث خطأ في الشبكة.");

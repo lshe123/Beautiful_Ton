@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  base: './', // يضمن قراءة الروابط بشكل نسبي صحيح على استضافة Vercel
+  base: './', 
   build: {
     chunkSizeWarningLimit: 3000,
     outDir: 'dist'

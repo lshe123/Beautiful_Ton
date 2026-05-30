@@ -3,14 +3,9 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  server: {
-    port: 3000
-  },
+  base: './', // يضمن قراءة الروابط بشكل نسبي صحيح على استضافة Vercel
   build: {
-    chunkSizeWarningLimit: 2000,
-    // هذا السطر يخبر Vite و Vercel أن ملف index.html موجود في الجذر مباشرة
-    rollupOptions: {
-      input: './index.html'
-    }
+    chunkSizeWarningLimit: 3000,
+    outDir: 'dist'
   }
 });

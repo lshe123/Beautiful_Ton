@@ -12,6 +12,7 @@ function GamesPlatform() {
     if (!userFriendlyAddress) return;
     async function fetchBalance() {
       try {
+        // تم تصحيح الكود هنا وإرجاعه إلى TonClient بدلاً من Client
         const client = new TonClient({ endpoint: 'https://toncenter.com/api/v2/jsonRPC' });
         const balanceNano = await client.getBalance(Address.parse(userFriendlyAddress));
         setBalance((Number(balanceNano) / 1e9).toFixed(2));

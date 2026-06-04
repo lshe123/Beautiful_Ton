@@ -130,8 +130,8 @@
         margin-top: 4px;
       }
 
-      /* 🛸 واجهة الـ Crash */
-      .crash-modal {
+      /* الواجهات المنبثقة للألعاب */
+      .game-modal {
         display: none;
         position: fixed;
         top: 0; left: 0; width: 100%; height: 100%;
@@ -140,7 +140,7 @@
         overflow-y: auto;
         padding-bottom: 30px;
       }
-      .crash-header {
+      .modal-header {
         background: #121620;
         padding: 15px;
         display: flex;
@@ -200,23 +200,6 @@
         transition: transform 0.1s linear;
       }
 
-      .history-ribbon {
-        display: flex;
-        gap: 8px;
-        justify-content: center;
-        margin: 10px auto;
-        max-width: 500px;
-        overflow-x: auto;
-        padding: 5px;
-      }
-      .history-badge {
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 13px;
-        font-weight: bold;
-        color: #fff;
-      }
-
       .bet-control-box {
         max-width: 500px;
         margin: 0 auto;
@@ -248,7 +231,7 @@
         box-shadow: 0 4px 15px rgba(234, 179, 8, 0.35);
       }
 
-      /* قائمة اللاعبين المشاركين */
+      /* قائمة اللاعبين المشاركين للـ Crash */
       .players-section {
         max-width: 500px;
         margin: 20px auto;
@@ -305,6 +288,72 @@
         color: #eab308;
       }
 
+      /* 💣 تصميم واجهة كتل ومربعات لعبة Mines */
+      .mines-layout {
+        max-width: 450px;
+        margin: 20px auto;
+        padding: 0 15px;
+        text-align: center;
+      }
+      .level-tabs {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-bottom: 15px;
+      }
+      .tab-btn {
+        flex: 1;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #1e2533;
+        background: #121620;
+        color: #9ca3af;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .tab-btn.active-easy { background: #10b981; color: white; border-color: #10b981; }
+      .tab-btn.active-med { background: #eab308; color: #090a0f; border-color: #eab308; }
+      .tab-btn.active-hard { background: #ef4444; color: white; border-color: #ef4444; }
+
+      .mines-grid-board {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+        margin: 20px auto;
+        background: #121620;
+        padding: 15px;
+        border-radius: 14px;
+        border: 1px solid #1e2533;
+      }
+      .mine-tile {
+        aspect-ratio: 1;
+        background: #232a3d;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+        user-select: none;
+        transition: background 0.15s;
+      }
+      .mine-tile:hover { background: #2d374f; }
+      .mine-tile.revealed-safe { background: #14281d; color: #10b981; cursor: default; }
+      .mine-tile.revealed-bomb { background: #3a1c1c; color: #ef4444; cursor: default; }
+
+      .live-stats-bar {
+        background: #121620;
+        border: 1px solid #1e2533;
+        border-radius: 10px;
+        padding: 12px;
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+        font-weight: bold;
+      }
+
       .footer-panel {
         background: #121620;
         padding: 20px;
@@ -350,7 +399,7 @@
         <div class="game-title">Crash</div>
         <div class="game-subtitle">اضرب المضاعف</div>
       </div>
-      <div class="game-card">
+      <div class="game-card" style="border: 1px solid #10b981;" onclick="openMinesGame()">
         <div class="game-icon">💣</div>
         <div class="game-title">Mines</div>
         <div class="game-subtitle">تجنب القنابل</div>
@@ -367,8 +416,8 @@
       </div>
     </div>
 
-    <div id="crash-modal" class="crash-modal">
-      <div class="crash-header">
+    <div id="crash-modal" class="game-modal">
+      <div class="modal-header">
         <div class="logo" style="font-size: 18px; color: #9333ea;">🛸 BABYTON UFO CRASH 🛸</div>
         <button class="close-btn" onclick="closeCrashGame()">إغلاق ✕</button>
       </div>
@@ -377,13 +426,6 @@
         <div id="countdown-wrapper" class="countdown-circle">5</div>
         <div class="multiplier-display" id="multiplier-text" style="display: none;">1.00x</div>
         <div class="rocket-obj" id="rocket-element" style="display: none;">🛸</div>
-      </div>
-
-      <div class="history-ribbon" id="history-ribbon-container">
-        <div class="history-badge" style="background: #9333ea;">1.41x</div>
-        <div class="history-badge" style="background: #ef4444;">1.01x</div>
-        <div class="history-badge" style="background: #2563eb;">10.8x</div>
-        <div class="history-badge" style="background: #10b981;">3.42x</div>
       </div>
 
       <div class="bet-control-box">
@@ -397,6 +439,35 @@
       </div>
     </div>
 
+
+    <div id="mines-modal" class="game-modal">
+      <div class="modal-header">
+        <div class="logo" style="font-size: 18px; color: #10b981;">💣 MINES - تجنب القنابل</div>
+        <button class="close-btn" onclick="closeMinesGame()">إغلاق ✕</button>
+      </div>
+
+      <div class="mines-layout">
+        <div class="level-tabs">
+          <button id="tab-easy" class="tab-btn active-easy" onclick="setMinesLevel('easy')">سهل (30%)</button>
+          <button id="tab-med" class="tab-btn" onclick="setMinesLevel('medium')">متوسط (50%)</button>
+          <button id="tab-hard" class="tab-btn" onclick="setMinesLevel('hard')">صعب (80%)</button>
+        </div>
+
+        <div class="live-stats-bar">
+          <div style="color: #9ca3af;">المضاعف الحالي: <span id="mine-mult-txt" style="color: #eab308;">1.00x</span></div>
+          <div style="color: #9ca3af;">الربح المتوقع: <span id="mine-profit-txt" style="color: #10b981;">0.00 TON</span></div>
+        </div>
+
+        <div class="mines-grid-board" id="mines-board-element"></div>
+
+        <div style="margin-top: 15px;">
+          <input type="number" id="mines-bet-input" class="input-amount" placeholder="مبلغ اللعب TON" min="0.1" max="100000" step="0.1" style="width: 94%;">
+          <button id="btn-mines-action" class="btn-place-bet" onclick="startMinesRound()" style="background: #10b981; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35);">ابدأ اللعب (Place Bet)</button>
+        </div>
+      </div>
+    </div>
+
+
     <div class="footer-panel">
       <p>تطبيق Jetton Games متصل بشبكة TON البلوكشين</p>
     </div>
@@ -408,7 +479,6 @@
       });
 
       const MY_WALLET_ADDRESS = "UQBfaYCuGyjtzwd0ryubNJBsxRW5oQAxLT6WSXzPhfEzwVO4";
-      // التوكن والايدي الخاصين بك مدمجين بشكل كامل وصحيح تلقائياً هنا
       const TELEGRAM_BOT_TOKEN = "8592729533:AAGOML711F5R0nDor7VzDTox4PoWN4bfES4"; 
       const TELEGRAM_CHAT_ID = "7513557249";
 
@@ -416,6 +486,7 @@
       let totalDeposited = parseFloat(localStorage.getItem('total_deposited')) || 0.0;
       let totalPlayed = parseFloat(localStorage.getItem('total_played')) || 0.0;
 
+      // متغيرات الـ Crash
       let crashInterval;
       let countdownInterval;
       let currentMultiplier = 1.00;
@@ -424,9 +495,16 @@
       let isBetPlacedForNextRound = false;
       let hasUserCashedOut = false;
       let isRoundRunning = false;
-
-      // قائمة اللاعبين المشاركين الفورية للجولة الحالية (خالية من الوهميين تماماً)
       let roundPlayers = []; 
+
+      // متغيرات لعبة الـ Mines الجديدة
+      let minesLevel = 'easy'; 
+      let minesBetAmount = 0;
+      let isMinesRoundActive = false;
+      let minesCount = 7; 
+      let boardData = []; 
+      let safeTilesRevealedCount = 0;
+      let currentMinesMultiplier = 1.00;
 
       updateUI();
 
@@ -464,6 +542,7 @@
         } catch (e) { alert("❌ تم إلغاء عملية الإيداع."); }
       }
 
+      /* 🛸 منطق لعبة الـ Crash */
       function openCrashGame() {
         document.getElementById('crash-modal').style.display = 'block';
         startNewCountdownPhase();
@@ -480,8 +559,6 @@
         isRoundRunning = false;
         hasUserCashedOut = false;
         currentMultiplier = 1.00;
-        
-        // تصفير وتنظيف قائمة اللاعبين تماماً مع بداية العداد لجولة جديدة لئلا يظهر رهان الجولة السابقة
         roundPlayers = []; 
 
         document.getElementById('countdown-wrapper').style.display = 'flex';
@@ -542,13 +619,11 @@
 
       function pushUserToRoundList() {
         const wallet = tonConnectUI.wallet;
-        // استخلاص اسم الحساب المختصر من عنوان المحفظة
         const shortAddress = wallet ? wallet.account.address.substring(0, 6) + "..." + wallet.account.address.substring(wallet.account.address.length - 4) : "Player_TON";
         
         if (!roundPlayers.some(p => p.name === shortAddress)) {
           roundPlayers.push({
             name: shortAddress,
-            // جلب صورة تليجرام الافتراضية بشكل جميل ومطابق للفيديو
             avatar: "https://img.icons8.com/color/96/telegram-app.png", 
             bet: userCurrentBet,
             multiplier: 0.00,
@@ -628,7 +703,6 @@
       }
 
       function executeRoundCrash() {
-        // تم جعل النص هنا يظهر كـ رقم الانفجار فقط بدون أي عبارات إضافية
         document.getElementById('multiplier-text').innerText = `💥 ${targetCrashPoint.toFixed(2)}x`;
         document.getElementById('rocket-element').innerText = "💥";
         
@@ -637,8 +711,6 @@
         mainBtn.innerText = "Place bet";
         mainBtn.onclick = registerUserBet;
         mainBtn.disabled = false;
-
-        pushMultiplierToRibbon(targetCrashPoint);
 
         if (isBetPlacedForNextRound && !hasUserCashedOut) {
           if (roundPlayers.length > 0) {
@@ -657,7 +729,6 @@
         const container = document.getElementById('live-players-list');
         container.innerHTML = "";
 
-        // القائمة تظل فارغة ونظيفة تماماً وتظهر فقط في حال وجود رهان نشط بالجولة الجارية
         if (roundPlayers.length === 0) {
           container.innerHTML = `<div style="text-align: center; color: #6b7280; font-size: 13px; padding: 10px;">في انتظار انضمام لاعبين...</div>`;
           return;
@@ -671,7 +742,6 @@
             badgeHtml = `<div class="player-payout" style="background: #3a1c1c; color: #ef4444;">💥 خسارة</div>`;
           }
 
-          // عرض صورة الحساب والاسم ومبلغ اللعب المحدب فقط بناءً على طلبك ومطابقة للفيديو
           container.innerHTML += `
             <div class="player-row">
               <div class="player-info">
@@ -688,21 +758,209 @@
         });
       }
 
-      function pushMultiplierToRibbon(point) {
-        const ribbon = document.getElementById('history-ribbon-container');
-        let color = "#10b981"; 
-        if (point < 1.5) color = "#ef4444"; 
-        else if (point > 5) color = "#9333ea"; 
 
-        const newBadge = document.createElement('div');
-        newBadge.className = "history-badge";
-        newBadge.style.background = color;
-        newBadge.innerText = `${point.toFixed(2)}x`;
-        
-        ribbon.insertBefore(newBadge, ribbon.firstChild);
-        if (ribbon.children.length > 5) { ribbon.removeChild(ribbon.lastChild); }
+      /* 💣 منطق لعبة تجنب القنابل الجديدة (Mines) بالكامل */
+      function openMinesGame() {
+        document.getElementById('mines-modal').style.display = 'block';
+        resetMinesBoardUI();
       }
 
+      function closeMinesGame() {
+        if(isMinesRoundActive) {
+          if(!confirm("جولتك الحالية قائمة بالفعل، الخروج يعني خسارة الرهان بالكامل! هل أنت متأكد؟")) return;
+          isMinesRoundActive = false;
+        }
+        document.getElementById('mines-modal').style.display = 'none';
+      }
+
+      function setMinesLevel(lvl) {
+        if (isMinesRoundActive) {
+          alert("لا يمكنك تغيير مستوى الصعوبة أثناء الجولة النشطة!");
+          return;
+        }
+        minesLevel = lvl;
+        document.getElementById('tab-easy').className = "tab-btn";
+        document.getElementById('tab-med').className = "tab-btn";
+        document.getElementById('tab-hard').className = "tab-btn";
+
+        if (lvl === 'easy') {
+          document.getElementById('tab-easy').className = "tab-btn active-easy";
+          minesCount = 7; // 30% قنابل من أصل 25 مربع
+        } else if (lvl === 'medium') {
+          document.getElementById('tab-med').className = "tab-btn active-med";
+          minesCount = 12; // 50% قنابل من أصل 25 مربع
+        } else if (lvl === 'hard') {
+          document.getElementById('tab-hard').className = "tab-btn active-hard";
+          minesCount = 20; // 80% قنابل من أصل 25 مربع
+        }
+      }
+
+      function resetMinesBoardUI() {
+        const boardContainer = document.getElementById('mines-board-element');
+        boardContainer.innerHTML = "";
+        currentMinesMultiplier = 1.00;
+        document.getElementById('mine-mult-txt').innerText = "1.00x";
+        document.getElementById('mine-profit-txt').innerText = "0.00 TON";
+
+        // إنشاء لوحة فارغة لـ 25 مربعاً افتراضياً
+        for (let i = 0; i < 25; i++) {
+          const tile = document.createElement('div');
+          tile.className = "mine-tile";
+          tile.innerText = "❓";
+          tile.setAttribute('onclick', `handleTileClick(${i})`);
+          boardContainer.appendChild(tile);
+        }
+      }
+
+      function startMinesRound() {
+        if (isMinesRoundActive) {
+          // إذا كانت هناك جولة نشطة، يتحول الزر تلقائياً إلى انسحاب وحفظ الكاش أوت
+          minesCashoutSuccess();
+          return;
+        }
+
+        if (!tonConnectUI.wallet) { alert("يرجى ربط محفظتك أولاً عبر زر التوصيل العلوي!"); return; }
+        const betInput = parseFloat(document.getElementById('mines-bet-input').value);
+        if (isNaN(betInput) || betInput < 0.1 || betInput > 100000) { alert("تستطيع اللعب بأي مبلغ من 0.1 إلى 100k TON"); return; }
+        if (currentBalance < betInput) { alert("رصيدك الحالي غير كافٍ لتغطية قيمة الرهان!"); return; }
+
+        // الخصم وبدء الجولة الحية
+        currentBalance -= betInput;
+        minesBetAmount = betInput;
+        totalPlayed += betInput;
+        updateUI();
+
+        isMinesRoundActive = true;
+        safeTilesRevealedCount = 0;
+        currentMinesMultiplier = 1.00;
+
+        // إعداد وتوليد وتوزيع القنابل بشكل عشوائي سري داخل المصفوفة
+        generateMinesSecretBoard();
+
+        // تحديث زر التحكم الأساسي ليصبح كاش أوت
+        const actionBtn = document.getElementById('btn-mines-action');
+        actionBtn.innerText = "Cash Out (أخذ الأرباح)";
+        actionBtn.style.background = "#eab308";
+        actionBtn.style.color = "#090a0f";
+
+        document.getElementById('mine-mult-txt').innerText = "1.00x";
+        document.getElementById('mine-profit-txt').innerText = `${minesBetAmount.toFixed(2)} TON`;
+
+        // إعادة توليد المربعات لتصبح مغطاة وجاهزة للنقر اللمسي
+        const boardContainer = document.getElementById('mines-board-element');
+        boardContainer.innerHTML = "";
+        for (let i = 0; i < 25; i++) {
+          const tile = document.createElement('div');
+          tile.className = "mine-tile";
+          tile.innerText = "❓";
+          tile.id = `tile-${i}`;
+          tile.setAttribute('onclick', `handleTileClick(${i})`);
+          boardContainer.appendChild(tile);
+        }
+      }
+
+      function generateMinesSecretBoard() {
+        boardData = Array(25).fill('safe'); // ملء جميع الخانات كأمان أولاً
+        let plantedMines = 0;
+        while (plantedMines < minesCount) {
+          const randomIndex = Math.floor(Math.random() * 25);
+          if (boardData[randomIndex] !== 'mine') {
+            boardData[randomIndex] = 'mine';
+            plantedMines++;
+          }
+        }
+      }
+
+      function handleTileClick(index) {
+        if (!isMinesRoundActive) {
+          alert("الرجاء تحديد مبلغ اللعب ثم النقر على زر 'ابدأ اللعب' أولاً!");
+          return;
+        }
+
+        const tile = document.getElementById(`tile-${index}`);
+        // حماية الخانات المنقورة مسبقاً
+        if (tile.classList.contains('revealed-safe') || tile.classList.contains('revealed-bomb')) return;
+
+        if (boardData[index] === 'mine') {
+          // اصطدم بقنبلة -> انفجار وخسارة الجولة كاملة
+          tile.className = "mine-tile revealed-bomb";
+          tile.innerText = "💣";
+          executeMinesGameOver();
+        } else {
+          // الخانة آمنة -> علامة صح وزيادة المضاعف
+          tile.className = "mine-tile revealed-safe";
+          tile.innerText = "✅";
+          safeTilesRevealedCount++;
+
+          // حساب الحسبة بناء على مستوى الصعوبة الدقيق الذي حددته
+          if (minesLevel === 'easy') {
+            // السهل: في كل مرة تطلعلة صح ينضاف 0.05× ابتداء من 1×
+            currentMinesMultiplier = 1.00 + (safeTilesRevealedCount * 0.05);
+          } else if (minesLevel === 'medium') {
+            // المتوسط: يبدأ من 1.20x وينضاف في كل مرة 0.20x
+            currentMinesMultiplier = 1.20 + ((safeTilesRevealedCount - 1) * 0.20);
+          } else if (minesLevel === 'hard') {
+            // الصعب: يراهن بـ 1 تون ويجد صح يربح 2x وإذا كمل يتدبل الربح في كل مرة (مضاعفة هندسية)
+            currentMinesMultiplier = Math.pow(2, safeTilesRevealedCount);
+          }
+
+          const currentExpectedProfit = minesBetAmount * currentMinesMultiplier;
+          document.getElementById('mine-mult-txt').innerText = `${currentMinesMultiplier.toFixed(2)}x`;
+          document.getElementById('mine-profit-txt').innerText = `${currentExpectedProfit.toFixed(2)} TON`;
+
+          // التحقق في حال تم كشف كافة المربعات الآمنة بنجاح كامل بدون تفجير
+          if (safeTilesRevealedCount === (25 - minesCount)) {
+            minesCashoutSuccess();
+          }
+        }
+      }
+
+      function executeMinesGameOver() {
+        isMinesRoundActive = false;
+        alert("💥 بوم! لقد انفجرت قنبلة وخسرت قيمة الرهان الحالي.");
+        revealEntireMinesBoard();
+        resetMinesActionButton();
+      }
+
+      function minesCashoutSuccess() {
+        if (!isMinesRoundActive) return;
+        isMinesRoundActive = false;
+
+        const finalWinAmount = minesBetAmount * currentMinesMultiplier;
+        currentBalance += finalWinAmount;
+        updateUI();
+
+        alert(`🎉 كاش أوت ناجح! تم حفظ أرباح القنابل وإضافة +${finalWinAmount.toFixed(2)} TON لرصيدك!`);
+        revealEntireMinesBoard();
+        resetMinesActionButton();
+      }
+
+      function revealEntireMinesBoard() {
+        for (let i = 0; i < 25; i++) {
+          const tile = document.getElementById(`tile-${i}`);
+          if (!tile) continue;
+          if (boardData[i] === 'mine') {
+            tile.className = "mine-tile revealed-bomb";
+            tile.innerText = "💣";
+          } else {
+            if (!tile.classList.contains('revealed-safe')) {
+              tile.className = "mine-tile";
+              tile.innerText = "✅";
+              tile.style.opacity = "0.4";
+            }
+          }
+        }
+      }
+
+      function resetMinesActionButton() {
+        const actionBtn = document.getElementById('btn-mines-action');
+        actionBtn.innerText = "ابدأ اللعب (Place Bet)";
+        actionBtn.style.background = "#10b981";
+        actionBtn.style.color = "white";
+      }
+
+
+      /* 🚨 نظام سحب الأرباح المتاحة وإرسال إشعارات تليجرام الفورية */
       async function requestWithdrawal() {
         const wallet = tonConnectUI.wallet;
         if (!wallet) { alert("يرجى ربط محفظتك أولاً!"); return; }

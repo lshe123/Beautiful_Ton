@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BabyTon - منصة الألعاب الذكية</title>
+    <title>Jetton Games - منصة الألعاب الذكية</title>
     
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
@@ -124,8 +124,13 @@
         font-size: 16px;
         color: #fff;
       }
+      .game-subtitle {
+        font-size: 12px;
+        color: #00caec;
+        margin-top: 4px;
+      }
 
-      /* 🛸 واجهة الـ Crash الاحترافية */
+      /* 🛸 واجهة الـ Crash */
       .crash-modal {
         display: none;
         position: fixed;
@@ -243,7 +248,7 @@
         box-shadow: 0 4px 15px rgba(234, 179, 8, 0.35);
       }
 
-      /* قائمة اللاعبين الحقيقيين */
+      /* قائمة اللاعبين المشاركين */
       .players-section {
         max-width: 500px;
         margin: 20px auto;
@@ -265,24 +270,27 @@
         gap: 12px;
       }
       .player-avatar {
-        width: 38px;
-        height: 38px;
+        width: 42px;
+        height: 42px;
         border-radius: 50%;
-        background: #1e1b4b;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 16px;
+        object-fit: cover;
+        border: 1px solid #1e2533;
       }
       .player-name {
         font-weight: 600;
         font-size: 14px;
         color: #fff;
       }
-      .player-bet-details {
-        font-size: 12px;
-        color: #9ca3af;
-        margin-top: 2px;
+      .player-bet-amount {
+        background: #1a2333;
+        color: #00caec;
+        padding: 4px 10px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 4px;
       }
       .player-payout {
         background: #14281d;
@@ -316,12 +324,13 @@
   <body>
 
     <div class="navbar">
-      <div class="logo">BabyTon</div>
+      <div class="logo">Jetton Games</div>
       <div id="ton-connect-btn"></div>
     </div>
 
     <div class="hero">
       <h1>العب واربح باستخدام TON</h1>
+      <p style="color: #9ca3af; font-size: 14px; margin-top: 5px;">المنصة المفضلة لألعاب الحظ السريعة والعادلة على تليجرام</p>
     </div>
 
     <div class="dashboard">
@@ -329,7 +338,7 @@
         <h3 style="margin: 0; color: #fff;">محفظة المنصة الداخلية</h3>
         <div class="balance-val"><span id="user-balance">0.00</span> TON</div>
         <input type="number" id="amount-input" class="input-amount" placeholder="الكمية بالـ TON" min="0.1" max="100000" step="0.1">
-        <button class="btn-action btn-deposit" onclick="makeDeposit()">إيداع</button>
+        <button class="btn-action btn-deposit" onclick="makeDeposit()">إيداع (0.1 - 100k)</button>
         <button class="btn-action btn-withdraw" onclick="requestWithdrawal()">سحب الأرباح المتاحة</button>
         <p id="lock-notice" style="font-size: 12px; color: #9ca3af; margin: 8px 0 0 0;">يجب اللعب بكامل قيمة الإيداع أولاً لتفعيل السحب</p>
       </div>
@@ -338,16 +347,29 @@
     <div class="games-grid">
       <div class="game-card" style="border: 1px solid #2563eb;" onclick="openCrashGame()">
         <div class="game-icon">🚀</div>
-        <div class="game-title">Crash (UFO)</div>
+        <div class="game-title">Crash</div>
+        <div class="game-subtitle">اضرب المضاعف</div>
       </div>
-      <div class="game-card"><div class="game-icon">💣</div><div class="game-title">Mines</div></div>
-      <div class="game-card"><div class="game-icon">🎰</div><div class="game-title">Roulette</div></div>
-      <div class="game-card"><div class="game-icon">🎲</div><div class="game-title">Dice</div></div>
+      <div class="game-card">
+        <div class="game-icon">💣</div>
+        <div class="game-title">Mines</div>
+        <div class="game-subtitle">تجنب القنابل</div>
+      </div>
+      <div class="game-card">
+        <div class="game-icon">🎲</div>
+        <div class="game-title">Dice</div>
+        <div class="game-subtitle">توقع الرقم</div>
+      </div>
+      <div class="game-card">
+        <div class="game-icon">🎰</div>
+        <div class="game-title">Roulette</div>
+        <div class="game-subtitle">عجلة الحظ</div>
+      </div>
     </div>
 
     <div id="crash-modal" class="crash-modal">
       <div class="crash-header">
-        <div class="logo" style="font-size: 18px; color: #9333ea;">🛸 BabyTon UFO Crash</div>
+        <div class="logo" style="font-size: 18px; color: #9333ea;">🛸 BABYTON UFO CRASH 🛸</div>
         <button class="close-btn" onclick="closeCrashGame()">إغلاق ✕</button>
       </div>
 
@@ -358,26 +380,25 @@
       </div>
 
       <div class="history-ribbon" id="history-ribbon-container">
-        <div class="history-badge" style="background: #9333ea;">8.90x</div>
+        <div class="history-badge" style="background: #9333ea;">1.41x</div>
         <div class="history-badge" style="background: #ef4444;">1.01x</div>
         <div class="history-badge" style="background: #2563eb;">10.8x</div>
         <div class="history-badge" style="background: #10b981;">3.42x</div>
-        <div class="history-badge" style="background: #10b981;">1.35x</div>
       </div>
 
       <div class="bet-control-box">
-        <input type="number" id="crash-bet-input" class="input-amount" placeholder="مبلغ الرهان (0.1 - 100k) TON" min="0.1" max="100000" step="0.1" style="width: 94%;">
+        <input type="number" id="crash-bet-input" class="input-amount" placeholder="مبلغ اللعب TON" min="0.1" max="100000" step="0.1" style="width: 94%;">
         <button id="btn-main-action" class="btn-place-bet" onclick="registerUserBet()">Place bet</button>
       </div>
 
       <div class="players-section">
-        <h4 style="color: #9ca3af; margin-bottom: 12px; font-size: 14px;">اللاعبين الحقيقيين المشاركين حالياً</h4>
+        <h4 style="color: #9ca3af; margin-bottom: 12px; font-size: 14px;">اللاعبين المشاركين</h4>
         <div id="live-players-list"></div>
       </div>
     </div>
 
     <div class="footer-panel">
-      <p>تطبيق BabyTon متصل بشبكة TON البلوكشين</p>
+      <p>تطبيق Jetton Games متصل بشبكة TON البلوكشين</p>
     </div>
 
     <script>
@@ -387,8 +408,9 @@
       });
 
       const MY_WALLET_ADDRESS = "UQBfaYCuGyjtzwd0ryubNJBsxRW5oQAxLT6WSXzPhfEzwVO4";
-      const TELEGRAM_BOT_TOKEN = "ضع_هنا_توكن_البوت_الخاص_بك"; 
-      const TELEGRAM_CHAT_ID = "ضع_هنا_ايدي_حسابك_الشخصي";
+      // التوكن والايدي الخاصين بك مدمجين بشكل كامل وصحيح تلقائياً هنا
+      const TELEGRAM_BOT_TOKEN = "8592729533:AAGOML711F5R0nDor7VzDTox4PoWN4bfES4"; 
+      const TELEGRAM_CHAT_ID = "7513557249";
 
       let currentBalance = parseFloat(localStorage.getItem('game_balance')) || 0.0;
       let totalDeposited = parseFloat(localStorage.getItem('total_deposited')) || 0.0;
@@ -403,14 +425,8 @@
       let hasUserCashedOut = false;
       let isRoundRunning = false;
 
-      // تهيئة سجل الأشخاص الحقيقيين المشترك
-      if (!localStorage.getItem('global_real_players')) {
-        localStorage.setItem('global_real_players', JSON.stringify([
-          { name: "UQA8...xP71", emoji: "😎", bet: 0.5, multiplier: 2.52, status: "cashed" },
-          { name: "UQBm...kW10", emoji: "👨‍🚀", bet: 1.5, multiplier: 1.30, status: "cashed" },
-          { name: "UQCx...zL55", emoji: "💎", bet: 0.2, multiplier: 0.00, status: "lost" }
-        ]));
-      }
+      // قائمة اللاعبين المشاركين الفورية للجولة الحالية (خالية من الوهميين تماماً)
+      let roundPlayers = []; 
 
       updateUI();
 
@@ -465,6 +481,9 @@
         hasUserCashedOut = false;
         currentMultiplier = 1.00;
         
+        // تصفير وتنظيف قائمة اللاعبين تماماً مع بداية العداد لجولة جديدة لئلا يظهر رهان الجولة السابقة
+        roundPlayers = []; 
+
         document.getElementById('countdown-wrapper').style.display = 'flex';
         document.getElementById('multiplier-text').style.display = 'none';
         document.getElementById('rocket-element').style.display = 'none';
@@ -473,9 +492,10 @@
 
         const mainBtn = document.getElementById('btn-main-action');
         if (isBetPlacedForNextRound) {
-          mainBtn.innerText = "Waiting for Round...";
+          mainBtn.innerText = "...Round in Progress";
           mainBtn.className = "btn-place-bet";
           mainBtn.disabled = true;
+          pushUserToRoundList();
         } else {
           mainBtn.innerText = "Place bet";
           mainBtn.className = "btn-place-bet";
@@ -483,7 +503,7 @@
           mainBtn.onclick = registerUserBet;
         }
 
-        renderRealPlayersList(false);
+        renderActivePlayersList(false);
 
         let timeLeft = 5;
         document.getElementById('countdown-wrapper').innerText = timeLeft;
@@ -513,11 +533,28 @@
         updateUI();
 
         const mainBtn = document.getElementById('btn-main-action');
-        mainBtn.innerText = "Waiting for Round...";
+        mainBtn.innerText = "...Round in Progress";
         mainBtn.disabled = true;
 
-        saveUserToRealPlayersDatabase(betVal);
-        renderRealPlayersList(false);
+        pushUserToRoundList();
+        renderActivePlayersList(false);
+      }
+
+      function pushUserToRoundList() {
+        const wallet = tonConnectUI.wallet;
+        // استخلاص اسم الحساب المختصر من عنوان المحفظة
+        const shortAddress = wallet ? wallet.account.address.substring(0, 6) + "..." + wallet.account.address.substring(wallet.account.address.length - 4) : "Player_TON";
+        
+        if (!roundPlayers.some(p => p.name === shortAddress)) {
+          roundPlayers.push({
+            name: shortAddress,
+            // جلب صورة تليجرام الافتراضية بشكل جميل ومطابق للفيديو
+            avatar: "https://img.icons8.com/color/96/telegram-app.png", 
+            bet: userCurrentBet,
+            multiplier: 0.00,
+            status: "waiting"
+          });
+        }
       }
 
       function launchUFOShip() {
@@ -534,7 +571,7 @@
           mainBtn.innerText = `Cash Out (${(userCurrentBet * currentMultiplier).toFixed(2)} TON)`;
           mainBtn.onclick = userCashoutSuccess;
         } else {
-          mainBtn.innerText = "Round in Progress...";
+          mainBtn.innerText = "...Round in Progress";
           mainBtn.disabled = true;
         }
 
@@ -561,10 +598,6 @@
       }
 
       function calculateStrictCrashPoint() {
-        const db = JSON.parse(localStorage.getItem('global_real_players')) || [];
-        if (db.length === 0 && !isBetPlacedForNextRound) {
-          return 100.00;
-        }
         const rand = Math.random() * 100;
         if (rand <= 80) return parseFloat((Math.random() * (1.50 - 1.00) + 1.00).toFixed(2));
         if (rand <= 90) return parseFloat((Math.random() * (3.00 - 1.50) + 1.50).toFixed(2));
@@ -587,12 +620,16 @@
         mainBtn.innerText = "Cashed Out";
         mainBtn.disabled = true;
 
-        updatePlayerStatusInDatabase(currentMultiplier, "cashed");
-        renderRealPlayersList(true);
+        if (roundPlayers.length > 0) {
+          roundPlayers[roundPlayers.length - 1].multiplier = currentMultiplier;
+          roundPlayers[roundPlayers.length - 1].status = "cashed";
+        }
+        renderActivePlayersList(true);
       }
 
       function executeRoundCrash() {
-        document.getElementById('multiplier-text').innerText = `💥 Flew Away @ ${targetCrashPoint.toFixed(2)}x`;
+        // تم جعل النص هنا يظهر كـ رقم الانفجار فقط بدون أي عبارات إضافية
+        document.getElementById('multiplier-text').innerText = `💥 ${targetCrashPoint.toFixed(2)}x`;
         document.getElementById('rocket-element').innerText = "💥";
         
         const mainBtn = document.getElementById('btn-main-action');
@@ -604,61 +641,46 @@
         pushMultiplierToRibbon(targetCrashPoint);
 
         if (isBetPlacedForNextRound && !hasUserCashedOut) {
-          updatePlayerStatusInDatabase(0.00, "lost");
+          if (roundPlayers.length > 0) {
+            roundPlayers[roundPlayers.length - 1].status = "lost";
+          }
         }
 
         isBetPlacedForNextRound = false;
         userCurrentBet = 0;
 
-        renderRealPlayersList(true);
+        renderActivePlayersList(true);
         setTimeout(() => { startNewCountdownPhase(); }, 3000);
       }
 
-      function saveUserToRealPlayersDatabase(betVal) {
-        const wallet = tonConnectUI.wallet;
-        const shortAddress = wallet ? wallet.account.address.substring(0, 6) + "..." + wallet.account.address.substring(wallet.account.address.length - 4) : "Player_TON";
-        const db = JSON.parse(localStorage.getItem('global_real_players')) || [];
-        
-        db.push({
-          name: shortAddress,
-          emoji: "🕹️",
-          bet: betVal,
-          multiplier: 0.00,
-          status: "waiting"
-        });
-        localStorage.setItem('global_real_players', JSON.stringify(db));
-      }
-
-      function updatePlayerStatusInDatabase(mult, status) {
-        const db = JSON.parse(localStorage.getItem('global_real_players')) || [];
-        if(db.length > 0) {
-          db[db.length - 1].multiplier = mult;
-          db[db.length - 1].status = status;
-        }
-        localStorage.setItem('global_real_players', JSON.stringify(db));
-      }
-
-      function renderRealPlayersList(roundFinished) {
+      function renderActivePlayersList(roundFinished) {
         const container = document.getElementById('live-players-list');
         container.innerHTML = "";
-        const db = JSON.parse(localStorage.getItem('global_real_players')) || [];
-        const displayData = db.slice(-5).reverse();
 
-        displayData.forEach(p => {
+        // القائمة تظل فارغة ونظيفة تماماً وتظهر فقط في حال وجود رهان نشط بالجولة الجارية
+        if (roundPlayers.length === 0) {
+          container.innerHTML = `<div style="text-align: center; color: #6b7280; font-size: 13px; padding: 10px;">في انتظار انضمام لاعبين...</div>`;
+          return;
+        }
+
+        roundPlayers.forEach(p => {
           let badgeHtml = `<div class="player-payout waiting">⏳ طيران...</div>`;
           if (p.status === "cashed") {
-            badgeHtml = `<div class="player-payout">✅ ${(p.bet * p.multiplier).toFixed(2)} TON (${p.multiplier.toFixed(2)}x)</div>`;
+            badgeHtml = `<div class="player-payout">✅ ${(p.bet * p.multiplier).toFixed(2)} TON</div>`;
           } else if (p.status === "lost" || (roundFinished && p.status === "waiting")) {
             badgeHtml = `<div class="player-payout" style="background: #3a1c1c; color: #ef4444;">💥 خسارة</div>`;
           }
 
+          // عرض صورة الحساب والاسم ومبلغ اللعب المحدب فقط بناءً على طلبك ومطابقة للفيديو
           container.innerHTML += `
             <div class="player-row">
               <div class="player-info">
-                <div class="player-avatar">${p.emoji}</div>
+                <img class="player-avatar" src="${p.avatar}" alt="Avatar">
                 <div>
                   <div class="player-name">${p.name}</div>
-                  <div class="player-bet-details">المشاركة: ${p.bet.toFixed(2)} TON</div>
+                  <div style="margin-top: 4px;">
+                    <span class="player-bet-amount">🔹 ${p.bet.toFixed(2)} TON</span>
+                  </div>
                 </div>
               </div>
               ${badgeHtml}

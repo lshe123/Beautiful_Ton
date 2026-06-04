@@ -125,7 +125,7 @@
         color: #fff;
       }
 
-      /* 🛸 واجهة لعبة الـ Crash الاحترافية بالكامل مطابق للفيديو */
+      /* 🛸 واجهة الـ Crash الاحترافية */
       .crash-modal {
         display: none;
         position: fixed;
@@ -168,12 +168,11 @@
       .multiplier-display {
         font-size: 56px;
         font-weight: 900;
-        color: #9333ea; /* لون بنفسجي مميز مأخوذ من فيديو الـ UFO */
+        color: #9333ea;
         z-index: 5;
         text-shadow: 0px 4px 15px rgba(147, 51, 234, 0.4);
       }
       
-      /* المؤقت الدائري الذكي قبل الانطلاق */
       .countdown-circle {
         width: 110px;
         height: 110px;
@@ -196,7 +195,6 @@
         transition: transform 0.1s linear;
       }
 
-      /* شريط سجل المضاعفات السابقة الملونة أعلى زر الرهان */
       .history-ribbon {
         display: flex;
         gap: 8px;
@@ -220,7 +218,6 @@
         padding: 0 15px;
       }
       
-      /* زر وضع الرهان والـ Cashout الضخم المطابق للفيديو */
       .btn-place-bet {
         background: #2563eb;
         color: #fff;
@@ -246,7 +243,7 @@
         box-shadow: 0 4px 15px rgba(234, 179, 8, 0.35);
       }
 
-      /* قائمة اللاعبين الحقيقيين بالكامل */
+      /* قائمة اللاعبين الحقيقيين */
       .players-section {
         max-width: 500px;
         margin: 20px auto;
@@ -331,9 +328,7 @@
       <div class="account-card">
         <h3 style="margin: 0; color: #fff;">محفظة المنصة الداخلية</h3>
         <div class="balance-val"><span id="user-balance">0.00</span> TON</div>
-        
         <input type="number" id="amount-input" class="input-amount" placeholder="الكمية بالـ TON" min="0.1" max="100000" step="0.1">
-        
         <button class="btn-action btn-deposit" onclick="makeDeposit()">إيداع</button>
         <button class="btn-action btn-withdraw" onclick="requestWithdrawal()">سحب الأرباح المتاحة</button>
         <p id="lock-notice" style="font-size: 12px; color: #9ca3af; margin: 8px 0 0 0;">يجب اللعب بكامل قيمة الإيداع أولاً لتفعيل السحب</p>
@@ -377,8 +372,7 @@
 
       <div class="players-section">
         <h4 style="color: #9ca3af; margin-bottom: 12px; font-size: 14px;">اللاعبين الحقيقيين المشاركين حالياً</h4>
-        <div id="live-players-list">
-          </div>
+        <div id="live-players-list"></div>
       </div>
     </div>
 
@@ -400,7 +394,6 @@
       let totalDeposited = parseFloat(localStorage.getItem('total_deposited')) || 0.0;
       let totalPlayed = parseFloat(localStorage.getItem('total_played')) || 0.0;
 
-      // متغيرات تسيير الجولات للـ Crash
       let crashInterval;
       let countdownInterval;
       let currentMultiplier = 1.00;
@@ -410,7 +403,7 @@
       let hasUserCashedOut = false;
       let isRoundRunning = false;
 
-      // قاعدة بيانات محلية تزامنية للاعبين الحقيقيين (أي رهان تقوم به أو أي مستخدم حقيقي يسجل في المنصة يتم حفظه هنا وعرضه حياً للجميع)
+      // تهيئة سجل الأشخاص الحقيقيين المشترك
       if (!localStorage.getItem('global_real_players')) {
         localStorage.setItem('global_real_players', JSON.stringify([
           { name: "UQA8...xP71", emoji: "😎", bet: 0.5, multiplier: 2.52, status: "cashed" },
@@ -455,7 +448,6 @@
         } catch (e) { alert("❌ تم إلغاء عملية الإيداع."); }
       }
 
-      // 🕹️ إدارة واجهة لعبة الـ Crash
       function openCrashGame() {
         document.getElementById('crash-modal').style.display = 'block';
         startNewCountdownPhase();
@@ -468,7 +460,6 @@
         isRoundRunning = false;
       }
 
-      // 1. طور المؤقت التنازلي قبل الإقلاع
       function startNewCountdownPhase() {
         isRoundRunning = false;
         hasUserCashedOut = false;
@@ -509,7 +500,6 @@
         }, 1000);
       }
 
-      // تسجيل وتثبيت رهان حقيقي للمستخدم الحالي
       function registerUserBet() {
         if (!tonConnectUI.wallet) { alert("يرجى ربط محفظتك أولاً عبر زر التوصيل العلوي!"); return; }
         const betVal = parseFloat(document.getElementById('crash-bet-input').value);
@@ -530,7 +520,6 @@
         renderRealPlayersList(false);
       }
 
-      // 2. طور صعود الـ UFO الحقيقي وتطبيق نسب الاحتمالات الدقيقة المطلوبة
       function launchUFOShip() {
         isRoundRunning = true;
         document.getElementById('countdown-wrapper').style.display = 'none';
@@ -549,15 +538,13 @@
           mainBtn.disabled = true;
         }
 
-        // حساب نقطة الانفجار الصارمة بناءً على نسب المشاركين الحقيقيين بالمنصة
         targetCrashPoint = calculateStrictCrashPoint();
 
         clearInterval(crashInterval);
         crashInterval = setInterval(() => {
-          currentMultiplier += 0.03; // معدل الصعود
+          currentMultiplier += 0.03;
           document.getElementById('multiplier-text').innerText = `${currentMultiplier.toFixed(2)}x`;
 
-          // أنميشن صعود رسومي مائل للمركبة الفضائية
           const posX = (currentMultiplier - 1) * 45;
           const posY = (currentMultiplier - 1) * -30;
           document.getElementById('rocket-element').style.transform = `translate(${posX}px, ${posY}px)`;
@@ -575,20 +562,13 @@
 
       function calculateStrictCrashPoint() {
         const db = JSON.parse(localStorage.getItem('global_real_players')) || [];
-        
-        // شرط رئيسي: عندما لا يشارك أحد حقيقي على الإطلاق بالجولة (القائمة فارغة تماماً وليس هناك رهان من المستخدم)، تصل الطائرة إلى 100.00x
         if (db.length === 0 && !isBetPlacedForNextRound) {
           return 100.00;
         }
-
         const rand = Math.random() * 100;
-        // 80% تنفجر الطائرة بين 1.00x و 1.50x
         if (rand <= 80) return parseFloat((Math.random() * (1.50 - 1.00) + 1.00).toFixed(2));
-        // 10% بين 1.50x و 3.00x
         if (rand <= 90) return parseFloat((Math.random() * (3.00 - 1.50) + 1.50).toFixed(2));
-        // 5% بين 3.00x و 10.00x
         if (rand <= 95) return parseFloat((Math.random() * (10.00 - 3.00) + 3.00).toFixed(2));
-        // 1% لتصل إلى 50.00x وما فوق (باقي الـ 5% المتاحة للأرقام الكبرى والـ UFO)
         return parseFloat((Math.random() * (50.00 - 10.00) + 10.00).toFixed(2));
       }
 
@@ -600,7 +580,7 @@
         currentBalance += winAmount;
         updateUI();
 
-        alert(`🎉 مبروك! كاش أوت ناجح بقيمة +${winAmount.toFixed(2)} TON عند مضاعف ${currentMultiplier.toFixed(2)}x`);
+        alert(`🎉 كاش أوت ناجح بقيمة +${winAmount.toFixed(2)} TON!`);
         
         const mainBtn = document.getElementById('btn-main-action');
         mainBtn.className = "btn-place-bet";
@@ -631,12 +611,9 @@
         userCurrentBet = 0;
 
         renderRealPlayersList(true);
-
-        // تكرار الجولات اللانهائي كالفيديو، تعود لوضع الانتظار والعداد بعد 3 ثوانٍ تلقائياً
         setTimeout(() => { startNewCountdownPhase(); }, 3000);
       }
 
-      // المزامنة والحفظ بقائمة اللاعبين الحقيقيين المشتركة
       function saveUserToRealPlayersDatabase(betVal) {
         const wallet = tonConnectUI.wallet;
         const shortAddress = wallet ? wallet.account.address.substring(0, 6) + "..." + wallet.account.address.substring(wallet.account.address.length - 4) : "Player_TON";
@@ -665,8 +642,6 @@
         const container = document.getElementById('live-players-list');
         container.innerHTML = "";
         const db = JSON.parse(localStorage.getItem('global_real_players')) || [];
-
-        // عرض آخر 5 لاعبين حقيقيين شاركوا ولعبوا في المنصة
         const displayData = db.slice(-5).reverse();
 
         displayData.forEach(p => {
@@ -683,7 +658,7 @@
                 <div class="player-avatar">${p.emoji}</div>
                 <div>
                   <div class="player-name">${p.name}</div>
-                  <div class="player-bet-details">الاسم والمشاركة: ${p.bet.toFixed(2)} TON</div>
+                  <div class="player-bet-details">المشاركة: ${p.bet.toFixed(2)} TON</div>
                 </div>
               </div>
               ${badgeHtml}

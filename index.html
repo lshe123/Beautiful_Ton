@@ -3,28 +3,56 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Jetton Games - منصة الألعاب الذكية</title>
+    <title>Jetton Games - منصة الألعاب الذكية | TON</title>
     
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
 
     <style>
+      * {
+        box-sizing: border-box;
+      }
       body {
         background-color: #0d0f14;
         color: #f3f4f6;
-        font-family: system-ui, -apple-system, sans-serif;
+        font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
         margin: 0;
         padding: 0;
         overflow-x: hidden;
       }
+      /* تعدد اللغات */
+      .lang-selector {
+        direction: ltr;
+        display: flex;
+        gap: 10px;
+        background: #1e2533;
+        padding: 5px 10px;
+        border-radius: 40px;
+      }
+      .lang-btn {
+        background: transparent;
+        border: none;
+        color: #aaa;
+        font-weight: bold;
+        cursor: pointer;
+        padding: 4px 12px;
+        border-radius: 30px;
+        transition: 0.2s;
+      }
+      .lang-btn.active {
+        background: #2563eb;
+        color: white;
+      }
       .navbar {
         background: #121620;
-        padding: 15px 20px;
+        padding: 12px 20px;
         display: flex;
         justify-content: space-between;
         align-items: center;
         border-bottom: 1px solid #1e2533;
+        flex-wrap: wrap;
+        gap: 12px;
       }
       .logo {
         font-size: 20px;
@@ -42,11 +70,9 @@
         background: radial-gradient(circle at center, #181c2b 0%, #0d0f14 100%);
       }
       .hero h1 {
-        font-size: 30px;
+        font-size: 28px;
         margin-bottom: 10px;
-        color: #fff;
       }
-      
       .dashboard {
         max-width: 500px;
         margin: -20px auto 20px auto;
@@ -88,7 +114,7 @@
         width: 95%;
         margin: 8px auto;
         display: block;
-        transition: background 0.2s;
+        transition: all 0.2s;
       }
       .btn-deposit { background: #10b981; }
       .btn-deposit:hover { background: #059669; }
@@ -112,25 +138,11 @@
         cursor: pointer;
         transition: transform 0.2s;
       }
-      .game-card:hover {
-        transform: translateY(-3px);
-      }
-      .game-icon {
-        font-size: 40px;
-        margin-bottom: 10px;
-      }
-      .game-title {
-        font-weight: bold;
-        font-size: 16px;
-        color: #fff;
-      }
-      .game-subtitle {
-        font-size: 12px;
-        color: #00caec;
-        margin-top: 4px;
-      }
+      .game-card:hover { transform: translateY(-3px); }
+      .game-icon { font-size: 40px; margin-bottom: 10px; }
+      .game-title { font-weight: bold; font-size: 16px; color: #fff; }
+      .game-subtitle { font-size: 12px; color: #00caec; margin-top: 4px; }
 
-      /* الواجهات المنبثقة للألعاب */
       .game-modal {
         display: none;
         position: fixed;
@@ -175,9 +187,7 @@
         font-weight: 900;
         color: #9333ea;
         z-index: 5;
-        text-shadow: 0px 4px 15px rgba(147, 51, 234, 0.4);
       }
-      
       .countdown-circle {
         width: 110px;
         height: 110px;
@@ -189,9 +199,7 @@
         font-size: 44px;
         font-weight: bold;
         color: #fff;
-        animation: pulseEffect 1s infinite alternate;
       }
-
       .rocket-obj {
         position: absolute;
         font-size: 55px;
@@ -199,13 +207,11 @@
         left: 25px;
         transition: transform 0.1s linear;
       }
-
       .bet-control-box {
         max-width: 500px;
         margin: 0 auto;
         padding: 0 15px;
       }
-      
       .btn-place-bet {
         background: #2563eb;
         color: #fff;
@@ -216,27 +222,10 @@
         font-weight: bold;
         border: none;
         cursor: pointer;
-        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35);
-        transition: background 0.2s;
+        transition: 0.2s;
       }
-      .btn-place-bet:disabled {
-        background: #1e2533;
-        color: #6b7280;
-        cursor: not-allowed;
-        box-shadow: none;
-      }
-      .btn-cashout-active {
-        background: #eab308;
-        color: #090a0f;
-        box-shadow: 0 4px 15px rgba(234, 179, 8, 0.35);
-      }
-
-      /* قائمة اللاعبين المشاركين للـ Crash */
-      .players-section {
-        max-width: 500px;
-        margin: 20px auto;
-        padding: 0 15px;
-      }
+      .btn-cashout-active { background: #eab308; color: #090a0f; }
+      .players-section { max-width: 500px; margin: 20px auto; padding: 0 15px; }
       .player-row {
         background: #121620;
         border: 1px solid #1e2533;
@@ -244,116 +233,44 @@
         border-radius: 12px;
         margin-bottom: 8px;
         display: flex;
-        align-items: center;
         justify-content: space-between;
-      }
-      .player-info {
-        display: flex;
         align-items: center;
-        gap: 12px;
       }
+      .player-info { display: flex; align-items: center; gap: 12px; }
       .player-avatar {
-        width: 42px;
-        height: 42px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 1px solid #1e2533;
+        width: 42px; height: 42px; border-radius: 50%;
+        object-fit: cover; border: 1px solid #1e2533;
       }
-      .player-name {
-        font-weight: 600;
-        font-size: 14px;
-        color: #fff;
-      }
-      .player-bet-amount {
-        background: #1a2333;
-        color: #00caec;
-        padding: 4px 10px;
-        border-radius: 8px;
-        font-size: 13px;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-      }
-      .player-payout {
-        background: #14281d;
-        color: #10b981;
-        padding: 6px 14px;
-        border-radius: 8px;
-        font-weight: bold;
-        font-size: 14px;
-      }
-      .player-payout.waiting {
-        background: #231c12;
-        color: #eab308;
-      }
+      .player-name { font-weight: 600; font-size: 14px; }
+      .player-bet-amount { background: #1a2333; color: #00caec; padding: 4px 10px; border-radius: 8px; font-size: 13px; font-weight: bold; }
+      .player-payout { background: #14281d; color: #10b981; padding: 6px 14px; border-radius: 8px; font-weight: bold; font-size: 14px; }
+      .player-payout.waiting { background: #231c12; color: #eab308; }
 
-      /* 💣 تصميم واجهة كتل ومربعات لعبة Mines */
-      .mines-layout {
-        max-width: 450px;
-        margin: 20px auto;
-        padding: 0 15px;
+      /* لعبة النرد */
+      .dice-area {
         text-align: center;
+        padding: 20px;
       }
-      .level-tabs {
+      .dice-result {
+        font-size: 70px;
+        background: #121620;
+        display: inline-block;
+        padding: 20px;
+        border-radius: 20px;
+        margin: 20px 0;
+        border: 1px solid #1e2533;
+      }
+      /* عجلة الحظ */
+      .wheel-container {
         display: flex;
-        gap: 10px;
         justify-content: center;
-        margin-bottom: 15px;
+        margin: 30px 0;
       }
-      .tab-btn {
-        flex: 1;
-        padding: 10px;
-        border-radius: 8px;
-        border: 1px solid #1e2533;
-        background: #121620;
-        color: #9ca3af;
-        font-weight: bold;
-        cursor: pointer;
-        transition: all 0.2s;
+      canvas {
+        max-width: 280px;
+        border-radius: 50%;
+        background: #1e2533;
       }
-      .tab-btn.active-easy { background: #10b981; color: white; border-color: #10b981; }
-      .tab-btn.active-med { background: #eab308; color: #090a0f; border-color: #eab308; }
-      .tab-btn.active-hard { background: #ef4444; color: white; border-color: #ef4444; }
-
-      .mines-grid-board {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 8px;
-        margin: 20px auto;
-        background: #121620;
-        padding: 15px;
-        border-radius: 14px;
-        border: 1px solid #1e2533;
-      }
-      .mine-tile {
-        aspect-ratio: 1;
-        background: #232a3d;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 24px;
-        font-weight: bold;
-        cursor: pointer;
-        user-select: none;
-        transition: background 0.15s;
-      }
-      .mine-tile:hover { background: #2d374f; }
-      .mine-tile.revealed-safe { background: #14281d; color: #10b981; cursor: default; }
-      .mine-tile.revealed-bomb { background: #3a1c1c; color: #ef4444; cursor: default; }
-
-      .live-stats-bar {
-        background: #121620;
-        border: 1px solid #1e2533;
-        border-radius: 10px;
-        padding: 12px;
-        margin-bottom: 15px;
-        display: flex;
-        justify-content: space-between;
-        font-weight: bold;
-      }
-
       .footer-panel {
         background: #121620;
         padding: 20px;
@@ -363,7 +280,6 @@
         font-size: 14px;
         color: #6b7280;
       }
-
       @keyframes pulseEffect {
         from { transform: scale(0.97); }
         to { transform: scale(1.03); }
@@ -374,621 +290,116 @@
 
     <div class="navbar">
       <div class="logo">Jetton Games</div>
-      <div id="ton-connect-btn"></div>
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <div class="lang-selector">
+          <button class="lang-btn active" data-lang="ar">🇸🇦 عربي</button>
+          <button class="lang-btn" data-lang="ru">🇷🇺 Русский</button>
+          <button class="lang-btn" data-lang="en">🇬🇧 English</button>
+        </div>
+        <div id="ton-connect-btn"></div>
+      </div>
     </div>
 
     <div class="hero">
-      <h1>العب واربح باستخدام TON</h1>
-      <p style="color: #9ca3af; font-size: 14px; margin-top: 5px;">المنصة المفضلة لألعاب الحظ السريعة والعادلة على تليجرام</p>
+      <h1 data-i18n="hero-title">العب واربح باستخدام TON</h1>
+      <p data-i18n="hero-sub" style="color: #9ca3af; font-size: 14px;">منصة الألعاب السريعة والعادلة</p>
     </div>
 
     <div class="dashboard">
       <div class="account-card">
-        <h3 style="margin: 0; color: #fff;">محفظة المنصة الداخلية</h3>
+        <h3 data-i18n="wallet-title">محفظة المنصة الداخلية</h3>
         <div class="balance-val"><span id="user-balance">0.00</span> TON</div>
-        <input type="number" id="amount-input" class="input-amount" placeholder="الكمية بالـ TON" min="0.1" max="100000" step="0.1">
-        <button class="btn-action btn-deposit" onclick="makeDeposit()">إيداع (0.1 - 100k)</button>
-        <button class="btn-action btn-withdraw" onclick="requestWithdrawal()">سحب الأرباح المتاحة</button>
-        <p id="lock-notice" style="font-size: 12px; color: #9ca3af; margin: 8px 0 0 0;">يجب اللعب بكامل قيمة الإيداع أولاً لتفعيل السحب</p>
+        <input type="number" id="amount-input" class="input-amount" placeholder="TON amount" min="0.1" step="0.1">
+        <button class="btn-action btn-deposit" onclick="makeDeposit()" data-i18n="deposit">إيداع</button>
+        <button class="btn-action btn-withdraw" onclick="requestWithdrawal()" data-i18n="withdraw">سحب الأرباح</button>
+        <p id="lock-notice" style="font-size: 12px; color: #9ca3af; margin-top: 8px;" data-i18n="lock-msg">يجب اللعب بكامل الإيداع لتفعيل السحب</p>
       </div>
     </div>
 
     <div class="games-grid">
-      <div class="game-card" style="border: 1px solid #2563eb;" onclick="openCrashGame()">
-        <div class="game-icon">🚀</div>
-        <div class="game-title">Crash</div>
-        <div class="game-subtitle">اضرب المضاعف</div>
-      </div>
-      <div class="game-card" style="border: 1px solid #10b981;" onclick="openMinesGame()">
-        <div class="game-icon">💣</div>
-        <div class="game-title">Mines</div>
-        <div class="game-subtitle">تجنب القنابل</div>
-      </div>
-      <div class="game-card">
-        <div class="game-icon">🎲</div>
-        <div class="game-title">Dice</div>
-        <div class="game-subtitle">توقع الرقم</div>
-      </div>
-      <div class="game-card">
-        <div class="game-icon">🎰</div>
-        <div class="game-title">Roulette</div>
-        <div class="game-subtitle">عجلة الحظ</div>
-      </div>
+      <div class="game-card" style="border-color:#2563eb" onclick="openCrashGame()"><div class="game-icon">🚀</div><div class="game-title">Crash</div><div class="game-subtitle">Multiplier</div></div>
+      <div class="game-card" style="border-color:#10b981" onclick="openMinesGame()"><div class="game-icon">💣</div><div class="game-title">Mines</div><div class="game-subtitle">Avoid bombs</div></div>
+      <div class="game-card" onclick="openDiceGame()"><div class="game-icon">🎲</div><div class="game-title">Dice</div><div class="game-subtitle">40% win</div></div>
+      <div class="game-card" onclick="openWheelGame()"><div class="game-icon">🎰</div><div class="game-title">Wheel</div><div class="game-subtitle">40% win</div></div>
     </div>
 
-    <div id="crash-modal" class="game-modal">
-      <div class="modal-header">
-        <div class="logo" style="font-size: 18px; color: #9333ea;">🛸 BABYTON UFO CRASH 🛸</div>
-        <button class="close-btn" onclick="closeCrashGame()">إغلاق ✕</button>
-      </div>
-
-      <div class="game-screen" id="game-screen">
-        <div id="countdown-wrapper" class="countdown-circle">5</div>
-        <div class="multiplier-display" id="multiplier-text" style="display: none;">1.00x</div>
-        <div class="rocket-obj" id="rocket-element" style="display: none;">🛸</div>
-      </div>
-
-      <div class="bet-control-box">
-        <input type="number" id="crash-bet-input" class="input-amount" placeholder="مبلغ اللعب TON" min="0.1" max="100000" step="0.1" style="width: 94%;">
-        <button id="btn-main-action" class="btn-place-bet" onclick="registerUserBet()">Place bet</button>
-      </div>
-
-      <div class="players-section">
-        <h4 style="color: #9ca3af; margin-bottom: 12px; font-size: 14px;">اللاعبين المشاركين</h4>
-        <div id="live-players-list"></div>
-      </div>
+    <!-- لعبة النرد -->
+    <div id="dice-modal" class="game-modal"><div class="modal-header"><div class="logo">🎲 DICE</div><button class="close-btn" onclick="closeDiceGame()">✕</button></div>
+      <div class="dice-area"><div class="dice-result" id="dice-value">⚀</div><input type="number" id="dice-bet" class="input-amount" placeholder="TON amount" style="width:80%"><button class="btn-place-bet" id="roll-dice-btn" onclick="rollDice()" style="margin-top:15px">🎲 ROLL (40% WIN)</button></div>
     </div>
 
-
-    <div id="mines-modal" class="game-modal">
-      <div class="modal-header">
-        <div class="logo" style="font-size: 18px; color: #10b981;">💣 MINES - تجنب القنابل</div>
-        <button class="close-btn" onclick="closeMinesGame()">إغلاق ✕</button>
-      </div>
-
-      <div class="mines-layout">
-        <div class="level-tabs">
-          <button id="tab-easy" class="tab-btn active-easy" onclick="setMinesLevel('easy')">سهل (30%)</button>
-          <button id="tab-med" class="tab-btn" onclick="setMinesLevel('medium')">متوسط (50%)</button>
-          <button id="tab-hard" class="tab-btn" onclick="setMinesLevel('hard')">صعب (80%)</button>
-        </div>
-
-        <div class="live-stats-bar">
-          <div style="color: #9ca3af;">المضاعف الحالي: <span id="mine-mult-txt" style="color: #eab308;">1.00x</span></div>
-          <div style="color: #9ca3af;">الربح المتوقع: <span id="mine-profit-txt" style="color: #10b981;">0.00 TON</span></div>
-        </div>
-
-        <div class="mines-grid-board" id="mines-board-element"></div>
-
-        <div style="margin-top: 15px;">
-          <input type="number" id="mines-bet-input" class="input-amount" placeholder="مبلغ اللعب TON" min="0.1" max="100000" step="0.1" style="width: 94%;">
-          <button id="btn-mines-action" class="btn-place-bet" onclick="startMinesRound()" style="background: #10b981; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35);">ابدأ اللعب (Place Bet)</button>
-        </div>
-      </div>
+    <!-- عجلة الحظ -->
+    <div id="wheel-modal" class="game-modal"><div class="modal-header"><div class="logo">🎡 WHEEL OF FORTUNE</div><button class="close-btn" onclick="closeWheelGame()">✕</button></div>
+      <div class="wheel-container"><canvas id="wheelCanvas" width="300" height="300"></canvas></div>
+      <div style="text-align:center"><input type="number" id="wheel-bet" class="input-amount" placeholder="TON amount" style="width:70%"><button class="btn-place-bet" onclick="spinWheel()" style="margin-top:10px">🎡 SPIN (40% WIN)</button></div>
     </div>
 
+    <div id="crash-modal" class="game-modal">...</div>
+    <div id="mines-modal" class="game-modal">...</div>
 
-    <div class="footer-panel">
-      <p>تطبيق Jetton Games متصل بشبكة TON البلوكشين</p>
-    </div>
+    <div class="footer-panel"><p>Jetton Games × TON Blockchain</p></div>
 
     <script>
-      const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-        manifestUrl: 'https://beautiful-ton.vercel.app/tonconnect-manifest.json',
-        buttonRootId: 'ton-connect-btn'
-      });
-
+      // ---------- تكامل TON و الرصيد ----------
+      const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({ manifestUrl: 'https://beautiful-ton.vercel.app/tonconnect-manifest.json', buttonRootId: 'ton-connect-btn' });
       const MY_WALLET_ADDRESS = "UQBfaYCuGyjtzwd0ryubNJBsxRW5oQAxLT6WSXzPhfEzwVO4";
-      const TELEGRAM_BOT_TOKEN = "8592729533:AAGOML711F5R0nDor7VzDTox4PoWN4bfES4"; 
+      const TELEGRAM_BOT_TOKEN = "8592729533:AAGOML711F5R0nDor7VzDTox4PoWN4bfES4";
       const TELEGRAM_CHAT_ID = "7513557249";
-
       let currentBalance = parseFloat(localStorage.getItem('game_balance')) || 0.0;
       let totalDeposited = parseFloat(localStorage.getItem('total_deposited')) || 0.0;
       let totalPlayed = parseFloat(localStorage.getItem('total_played')) || 0.0;
-
-      // متغيرات الـ Crash
-      let crashInterval;
-      let countdownInterval;
-      let currentMultiplier = 1.00;
-      let targetCrashPoint = 1.00;
-      let userCurrentBet = 0;
-      let isBetPlacedForNextRound = false;
-      let hasUserCashedOut = false;
-      let isRoundRunning = false;
-      let roundPlayers = []; 
-
-      // متغيرات لعبة الـ Mines الجديدة
-      let minesLevel = 'easy'; 
-      let minesBetAmount = 0;
-      let isMinesRoundActive = false;
-      let minesCount = 7; 
-      let boardData = []; 
-      let safeTilesRevealedCount = 0;
-      let currentMinesMultiplier = 1.00;
-
-      updateUI();
-
-      function updateUI() {
-        document.getElementById('user-balance').innerText = currentBalance.toFixed(2);
-        localStorage.setItem('game_balance', currentBalance);
-        localStorage.setItem('total_deposited', totalDeposited);
-        localStorage.setItem('total_played', totalPlayed);
-
-        if (totalPlayed >= totalDeposited && currentBalance > 0) {
-          document.getElementById('lock-notice').style.color = "#10b981";
-          document.getElementById('lock-notice').innerText = "🔓 السحب متاح الآن بالكامل لأرباحك!";
-        } else {
-          document.getElementById('lock-notice').style.color = "#9ca3af";
-          document.getElementById('lock-notice').innerText = "يجب اللعب بكامل قيمة الإيداع أولاً لتفعيل السحب";
-        }
-      }
-
-      async function makeDeposit() {
-        const wallet = tonConnectUI.wallet;
-        if (!wallet) { alert("يرجى ربط محفظتك أولاً عبر الزر العلوي!"); return; }
-        const amountInput = parseFloat(document.getElementById('amount-input').value);
-        if (isNaN(amountInput) || amountInput < 0.1 || amountInput > 100000) {
-          alert("❌ حدود الإيداع المسموح بها هي من 0.1 TON إلى 100,000 TON فقط.");
-          return;
-        }
-        const nanoAmount = (amountInput * 1000000000).toString();
-        const transaction = { validUntil: Math.floor(Date.now() / 1000) + 120, messages: [{ address: MY_WALLET_ADDRESS, amount: nanoAmount }] };
-        try {
-          await tonConnectUI.sendTransaction(transaction);
-          currentBalance += amountInput;
-          totalDeposited += amountInput;
-          alert(`🎉 تم إضافة ${amountInput} TON لرصيدك بنجاح!`);
-          updateUI();
-        } catch (e) { alert("❌ تم إلغاء عملية الإيداع."); }
-      }
-
-      /* 🛸 منطق لعبة الـ Crash */
-      function openCrashGame() {
-        document.getElementById('crash-modal').style.display = 'block';
-        startNewCountdownPhase();
-      }
-
-      function closeCrashGame() {
-        clearInterval(countdownInterval);
-        clearInterval(crashInterval);
-        document.getElementById('crash-modal').style.display = 'none';
-        isRoundRunning = false;
-      }
-
-      function startNewCountdownPhase() {
-        isRoundRunning = false;
-        hasUserCashedOut = false;
-        currentMultiplier = 1.00;
-        roundPlayers = []; 
-
-        document.getElementById('countdown-wrapper').style.display = 'flex';
-        document.getElementById('multiplier-text').style.display = 'none';
-        document.getElementById('rocket-element').style.display = 'none';
-        document.getElementById('rocket-element').innerText = "🛸";
-        document.getElementById('rocket-element').style.transform = "translate(0px, 0px)";
-
-        const mainBtn = document.getElementById('btn-main-action');
-        if (isBetPlacedForNextRound) {
-          mainBtn.innerText = "...Round in Progress";
-          mainBtn.className = "btn-place-bet";
-          mainBtn.disabled = true;
-          pushUserToRoundList();
-        } else {
-          mainBtn.innerText = "Place bet";
-          mainBtn.className = "btn-place-bet";
-          mainBtn.disabled = false;
-          mainBtn.onclick = registerUserBet;
-        }
-
-        renderActivePlayersList(false);
-
-        let timeLeft = 5;
-        document.getElementById('countdown-wrapper').innerText = timeLeft;
-        
-        clearInterval(countdownInterval);
-        countdownInterval = setInterval(() => {
-          timeLeft--;
-          if (timeLeft <= 0) {
-            clearInterval(countdownInterval);
-            launchUFOShip(); 
-          } else {
-            document.getElementById('countdown-wrapper').innerText = timeLeft;
-          }
-        }, 1000);
-      }
-
-      function registerUserBet() {
-        if (!tonConnectUI.wallet) { alert("يرجى ربط محفظتك أولاً عبر زر التوصيل العلوي!"); return; }
-        const betVal = parseFloat(document.getElementById('crash-bet-input').value);
-        if (isNaN(betVal) || betVal < 0.1 || betVal > 100000) { alert("تستطيع المشاركة بأي مبلغ من 0.1 إلى 100k TON"); return; }
-        if (currentBalance < betVal) { alert("رصيدك الحالي غير كافٍ!"); return; }
-
-        currentBalance -= betVal;
-        userCurrentBet = betVal;
-        totalPlayed += betVal;
-        isBetPlacedForNextRound = true;
-        updateUI();
-
-        const mainBtn = document.getElementById('btn-main-action');
-        mainBtn.innerText = "...Round in Progress";
-        mainBtn.disabled = true;
-
-        pushUserToRoundList();
-        renderActivePlayersList(false);
-      }
-
-      function pushUserToRoundList() {
-        const wallet = tonConnectUI.wallet;
-        const shortAddress = wallet ? wallet.account.address.substring(0, 6) + "..." + wallet.account.address.substring(wallet.account.address.length - 4) : "Player_TON";
-        
-        if (!roundPlayers.some(p => p.name === shortAddress)) {
-          roundPlayers.push({
-            name: shortAddress,
-            avatar: "https://img.icons8.com/color/96/telegram-app.png", 
-            bet: userCurrentBet,
-            multiplier: 0.00,
-            status: "waiting"
-          });
-        }
-      }
-
-      function launchUFOShip() {
-        isRoundRunning = true;
-        document.getElementById('countdown-wrapper').style.display = 'none';
-        document.getElementById('multiplier-text').style.display = 'block';
-        document.getElementById('rocket-element').style.display = 'block';
-
-        const mainBtn = document.getElementById('btn-main-action');
-        
-        if (isBetPlacedForNextRound) {
-          mainBtn.disabled = false;
-          mainBtn.className = "btn-place-bet btn-cashout-active";
-          mainBtn.innerText = `Cash Out (${(userCurrentBet * currentMultiplier).toFixed(2)} TON)`;
-          mainBtn.onclick = userCashoutSuccess;
-        } else {
-          mainBtn.innerText = "...Round in Progress";
-          mainBtn.disabled = true;
-        }
-
-        targetCrashPoint = calculateStrictCrashPoint();
-
-        clearInterval(crashInterval);
-        crashInterval = setInterval(() => {
-          currentMultiplier += 0.03;
-          document.getElementById('multiplier-text').innerText = `${currentMultiplier.toFixed(2)}x`;
-
-          const posX = (currentMultiplier - 1) * 45;
-          const posY = (currentMultiplier - 1) * -30;
-          document.getElementById('rocket-element').style.transform = `translate(${posX}px, ${posY}px)`;
-
-          if (isBetPlacedForNextRound && !hasUserCashedOut) {
-            mainBtn.innerText = `Cash Out (${(userCurrentBet * currentMultiplier).toFixed(2)} TON)`;
-          }
-
-          if (currentMultiplier >= targetCrashPoint) {
-            clearInterval(crashInterval);
-            executeRoundCrash();
-          }
-        }, 90);
-      }
-
-      function calculateStrictCrashPoint() {
-        const rand = Math.random() * 100;
-        if (rand <= 80) return parseFloat((Math.random() * (1.50 - 1.00) + 1.00).toFixed(2));
-        if (rand <= 90) return parseFloat((Math.random() * (3.00 - 1.50) + 1.50).toFixed(2));
-        if (rand <= 95) return parseFloat((Math.random() * (10.00 - 3.00) + 3.00).toFixed(2));
-        return parseFloat((Math.random() * (50.00 - 10.00) + 10.00).toFixed(2));
-      }
-
-      function userCashoutSuccess() {
-        if (!isRoundRunning || hasUserCashedOut) return;
-        hasUserCashedOut = true;
-        
-        const winAmount = userCurrentBet * currentMultiplier;
-        currentBalance += winAmount;
-        updateUI();
-
-        alert(`🎉 كاش أوت ناجح بقيمة +${winAmount.toFixed(2)} TON!`);
-        
-        const mainBtn = document.getElementById('btn-main-action');
-        mainBtn.className = "btn-place-bet";
-        mainBtn.innerText = "Cashed Out";
-        mainBtn.disabled = true;
-
-        if (roundPlayers.length > 0) {
-          roundPlayers[roundPlayers.length - 1].multiplier = currentMultiplier;
-          roundPlayers[roundPlayers.length - 1].status = "cashed";
-        }
-        renderActivePlayersList(true);
-      }
-
-      function executeRoundCrash() {
-        document.getElementById('multiplier-text').innerText = `💥 ${targetCrashPoint.toFixed(2)}x`;
-        document.getElementById('rocket-element').innerText = "💥";
-        
-        const mainBtn = document.getElementById('btn-main-action');
-        mainBtn.className = "btn-place-bet";
-        mainBtn.innerText = "Place bet";
-        mainBtn.onclick = registerUserBet;
-        mainBtn.disabled = false;
-
-        if (isBetPlacedForNextRound && !hasUserCashedOut) {
-          if (roundPlayers.length > 0) {
-            roundPlayers[roundPlayers.length - 1].status = "lost";
-          }
-        }
-
-        isBetPlacedForNextRound = false;
-        userCurrentBet = 0;
-
-        renderActivePlayersList(true);
-        setTimeout(() => { startNewCountdownPhase(); }, 3000);
-      }
-
-      function renderActivePlayersList(roundFinished) {
-        const container = document.getElementById('live-players-list');
-        container.innerHTML = "";
-
-        if (roundPlayers.length === 0) {
-          container.innerHTML = `<div style="text-align: center; color: #6b7280; font-size: 13px; padding: 10px;">في انتظار انضمام لاعبين...</div>`;
-          return;
-        }
-
-        roundPlayers.forEach(p => {
-          let badgeHtml = `<div class="player-payout waiting">⏳ طيران...</div>`;
-          if (p.status === "cashed") {
-            badgeHtml = `<div class="player-payout">✅ ${(p.bet * p.multiplier).toFixed(2)} TON</div>`;
-          } else if (p.status === "lost" || (roundFinished && p.status === "waiting")) {
-            badgeHtml = `<div class="player-payout" style="background: #3a1c1c; color: #ef4444;">💥 خسارة</div>`;
-          }
-
-          container.innerHTML += `
-            <div class="player-row">
-              <div class="player-info">
-                <img class="player-avatar" src="${p.avatar}" alt="Avatar">
-                <div>
-                  <div class="player-name">${p.name}</div>
-                  <div style="margin-top: 4px;">
-                    <span class="player-bet-amount">🔹 ${p.bet.toFixed(2)} TON</span>
-                  </div>
-                </div>
-              </div>
-              ${badgeHtml}
-            </div>`;
-        });
-      }
-
-
-      /* 💣 منطق لعبة تجنب القنابل الجديدة (Mines) بالكامل */
-      function openMinesGame() {
-        document.getElementById('mines-modal').style.display = 'block';
-        resetMinesBoardUI();
-      }
-
-      function closeMinesGame() {
-        if(isMinesRoundActive) {
-          if(!confirm("جولتك الحالية قائمة بالفعل، الخروج يعني خسارة الرهان بالكامل! هل أنت متأكد؟")) return;
-          isMinesRoundActive = false;
-        }
-        document.getElementById('mines-modal').style.display = 'none';
-      }
-
-      function setMinesLevel(lvl) {
-        if (isMinesRoundActive) {
-          alert("لا يمكنك تغيير مستوى الصعوبة أثناء الجولة النشطة!");
-          return;
-        }
-        minesLevel = lvl;
-        document.getElementById('tab-easy').className = "tab-btn";
-        document.getElementById('tab-med').className = "tab-btn";
-        document.getElementById('tab-hard').className = "tab-btn";
-
-        if (lvl === 'easy') {
-          document.getElementById('tab-easy').className = "tab-btn active-easy";
-          minesCount = 7; // 30% قنابل من أصل 25 مربع
-        } else if (lvl === 'medium') {
-          document.getElementById('tab-med').className = "tab-btn active-med";
-          minesCount = 12; // 50% قنابل من أصل 25 مربع
-        } else if (lvl === 'hard') {
-          document.getElementById('tab-hard').className = "tab-btn active-hard";
-          minesCount = 20; // 80% قنابل من أصل 25 مربع
-        }
-      }
-
-      function resetMinesBoardUI() {
-        const boardContainer = document.getElementById('mines-board-element');
-        boardContainer.innerHTML = "";
-        currentMinesMultiplier = 1.00;
-        document.getElementById('mine-mult-txt').innerText = "1.00x";
-        document.getElementById('mine-profit-txt').innerText = "0.00 TON";
-
-        // إنشاء لوحة فارغة لـ 25 مربعاً افتراضياً
-        for (let i = 0; i < 25; i++) {
-          const tile = document.createElement('div');
-          tile.className = "mine-tile";
-          tile.innerText = "❓";
-          tile.setAttribute('onclick', `handleTileClick(${i})`);
-          boardContainer.appendChild(tile);
-        }
-      }
-
-      function startMinesRound() {
-        if (isMinesRoundActive) {
-          // إذا كانت هناك جولة نشطة، يتحول الزر تلقائياً إلى انسحاب وحفظ الكاش أوت
-          minesCashoutSuccess();
-          return;
-        }
-
-        if (!tonConnectUI.wallet) { alert("يرجى ربط محفظتك أولاً عبر زر التوصيل العلوي!"); return; }
-        const betInput = parseFloat(document.getElementById('mines-bet-input').value);
-        if (isNaN(betInput) || betInput < 0.1 || betInput > 100000) { alert("تستطيع اللعب بأي مبلغ من 0.1 إلى 100k TON"); return; }
-        if (currentBalance < betInput) { alert("رصيدك الحالي غير كافٍ لتغطية قيمة الرهان!"); return; }
-
-        // الخصم وبدء الجولة الحية
-        currentBalance -= betInput;
-        minesBetAmount = betInput;
-        totalPlayed += betInput;
-        updateUI();
-
-        isMinesRoundActive = true;
-        safeTilesRevealedCount = 0;
-        currentMinesMultiplier = 1.00;
-
-        // إعداد وتوليد وتوزيع القنابل بشكل عشوائي سري داخل المصفوفة
-        generateMinesSecretBoard();
-
-        // تحديث زر التحكم الأساسي ليصبح كاش أوت
-        const actionBtn = document.getElementById('btn-mines-action');
-        actionBtn.innerText = "Cash Out (أخذ الأرباح)";
-        actionBtn.style.background = "#eab308";
-        actionBtn.style.color = "#090a0f";
-
-        document.getElementById('mine-mult-txt').innerText = "1.00x";
-        document.getElementById('mine-profit-txt').innerText = `${minesBetAmount.toFixed(2)} TON`;
-
-        // إعادة توليد المربعات لتصبح مغطاة وجاهزة للنقر اللمسي
-        const boardContainer = document.getElementById('mines-board-element');
-        boardContainer.innerHTML = "";
-        for (let i = 0; i < 25; i++) {
-          const tile = document.createElement('div');
-          tile.className = "mine-tile";
-          tile.innerText = "❓";
-          tile.id = `tile-${i}`;
-          tile.setAttribute('onclick', `handleTileClick(${i})`);
-          boardContainer.appendChild(tile);
-        }
-      }
-
-      function generateMinesSecretBoard() {
-        boardData = Array(25).fill('safe'); // ملء جميع الخانات كأمان أولاً
-        let plantedMines = 0;
-        while (plantedMines < minesCount) {
-          const randomIndex = Math.floor(Math.random() * 25);
-          if (boardData[randomIndex] !== 'mine') {
-            boardData[randomIndex] = 'mine';
-            plantedMines++;
-          }
-        }
-      }
-
-      function handleTileClick(index) {
-        if (!isMinesRoundActive) {
-          alert("الرجاء تحديد مبلغ اللعب ثم النقر على زر 'ابدأ اللعب' أولاً!");
-          return;
-        }
-
-        const tile = document.getElementById(`tile-${index}`);
-        // حماية الخانات المنقورة مسبقاً
-        if (tile.classList.contains('revealed-safe') || tile.classList.contains('revealed-bomb')) return;
-
-        if (boardData[index] === 'mine') {
-          // اصطدم بقنبلة -> انفجار وخسارة الجولة كاملة
-          tile.className = "mine-tile revealed-bomb";
-          tile.innerText = "💣";
-          executeMinesGameOver();
-        } else {
-          // الخانة آمنة -> علامة صح وزيادة المضاعف
-          tile.className = "mine-tile revealed-safe";
-          tile.innerText = "✅";
-          safeTilesRevealedCount++;
-
-          // حساب الحسبة بناء على مستوى الصعوبة الدقيق الذي حددته
-          if (minesLevel === 'easy') {
-            // السهل: في كل مرة تطلعلة صح ينضاف 0.05× ابتداء من 1×
-            currentMinesMultiplier = 1.00 + (safeTilesRevealedCount * 0.05);
-          } else if (minesLevel === 'medium') {
-            // المتوسط: يبدأ من 1.20x وينضاف في كل مرة 0.20x
-            currentMinesMultiplier = 1.20 + ((safeTilesRevealedCount - 1) * 0.20);
-          } else if (minesLevel === 'hard') {
-            // الصعب: يراهن بـ 1 تون ويجد صح يربح 2x وإذا كمل يتدبل الربح في كل مرة (مضاعفة هندسية)
-            currentMinesMultiplier = Math.pow(2, safeTilesRevealedCount);
-          }
-
-          const currentExpectedProfit = minesBetAmount * currentMinesMultiplier;
-          document.getElementById('mine-mult-txt').innerText = `${currentMinesMultiplier.toFixed(2)}x`;
-          document.getElementById('mine-profit-txt').innerText = `${currentExpectedProfit.toFixed(2)} TON`;
-
-          // التحقق في حال تم كشف كافة المربعات الآمنة بنجاح كامل بدون تفجير
-          if (safeTilesRevealedCount === (25 - minesCount)) {
-            minesCashoutSuccess();
-          }
-        }
-      }
-
-      function executeMinesGameOver() {
-        isMinesRoundActive = false;
-        alert("💥 بوم! لقد انفجرت قنبلة وخسرت قيمة الرهان الحالي.");
-        revealEntireMinesBoard();
-        resetMinesActionButton();
-      }
-
-      function minesCashoutSuccess() {
-        if (!isMinesRoundActive) return;
-        isMinesRoundActive = false;
-
-        const finalWinAmount = minesBetAmount * currentMinesMultiplier;
-        currentBalance += finalWinAmount;
-        updateUI();
-
-        alert(`🎉 كاش أوت ناجح! تم حفظ أرباح القنابل وإضافة +${finalWinAmount.toFixed(2)} TON لرصيدك!`);
-        revealEntireMinesBoard();
-        resetMinesActionButton();
-      }
-
-      function revealEntireMinesBoard() {
-        for (let i = 0; i < 25; i++) {
-          const tile = document.getElementById(`tile-${i}`);
-          if (!tile) continue;
-          if (boardData[i] === 'mine') {
-            tile.className = "mine-tile revealed-bomb";
-            tile.innerText = "💣";
-          } else {
-            if (!tile.classList.contains('revealed-safe')) {
-              tile.className = "mine-tile";
-              tile.innerText = "✅";
-              tile.style.opacity = "0.4";
-            }
-          }
-        }
-      }
-
-      function resetMinesActionButton() {
-        const actionBtn = document.getElementById('btn-mines-action');
-        actionBtn.innerText = "ابدأ اللعب (Place Bet)";
-        actionBtn.style.background = "#10b981";
-        actionBtn.style.color = "white";
-      }
-
-
-      /* 🚨 نظام سحب الأرباح المتاحة وإرسال إشعارات تليجرام الفورية */
-      async function requestWithdrawal() {
-        const wallet = tonConnectUI.wallet;
-        if (!wallet) { alert("يرجى ربط محفظتك أولاً!"); return; }
-        if (currentBalance <= 0) { alert("ليس لديك أي رصيد متاح للسحب حالياً."); return; }
-        if (totalPlayed < totalDeposited) {
-          const remainingRequired = totalDeposited - totalPlayed;
-          alert(`❌ سحب مرفوض! المتبقي لك لتلعبه لتفعيل السحب هو: ${remainingRequired.toFixed(2)} TON.`);
-          return;
-        }
-
-        const userWalletAddress = wallet.account.address;
-        const withdrawAmount = currentBalance;
-        const messageText = `🚨 *طلب سحب جديد من منصة الألعاب* 🚨\n\n💰 *المبلغ المطلوب:* ${withdrawAmount.toFixed(2)} TON\n👛 *محفظة اللاعب:* \`${userWalletAddress}\``;
-        const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-        
-        try {
-          const response = await fetch(telegramUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: messageText, parse_mode: 'Markdown' })
-          });
-          if (response.ok) {
-            alert(`✅ تم إرسال طلب السحب بنجاح لـ ${withdrawAmount.toFixed(2)} TON!`);
-            currentBalance = 0; 
-            updateUI();
-          } else { alert("❌ فشل إرسال الطلب، تأكد من إعدادات البوت والـ Chat ID."); }
-        } catch (error) { alert("❌ حدث خطأ أثناء الاتصال."); }
-      }
+      function updateUI() { document.getElementById('user-balance').innerText = currentBalance.toFixed(2); localStorage.setItem('game_balance', currentBalance); localStorage.setItem('total_deposited', totalDeposited); localStorage.setItem('total_played', totalPlayed); let notice = document.getElementById('lock-notice'); if(totalPlayed >= totalDeposited && currentBalance>0) { notice.style.color="#10b981"; notice.innerText = "🔓 السحب متاح"; if(lang==='ru') notice.innerText="🔓 Вывод доступен"; if(lang==='en') notice.innerText="🔓 Withdrawal available"; } else { notice.style.color="#9ca3af"; let txt="يجب اللعب بكامل الإيداع لتفعيل السحب"; if(lang==='ru') txt="Необходимо отыграть депозит"; if(lang==='en') txt="Play full deposit to unlock withdrawal"; notice.innerText=txt; } }
+      async function makeDeposit() { const wallet = tonConnectUI.wallet; if (!wallet) { alert("Connect wallet first"); return; } let amount = parseFloat(document.getElementById('amount-input').value); if(isNaN(amount) || amount<0.1 || amount>100000) { alert("0.1 - 100k TON only"); return; } const nano = (amount * 1e9).toString(); try { await tonConnectUI.sendTransaction({ validUntil: Date.now()+120000, messages:[{address:MY_WALLET_ADDRESS, amount:nano}] }); currentBalance += amount; totalDeposited += amount; updateUI(); alert(`+${amount} TON`); } catch(e){ alert("Cancelled"); } }
+      async function requestWithdrawal() { if(!tonConnectUI.wallet) { alert("Connect wallet"); return; } if(currentBalance<=0) { alert("Zero balance"); return; } if(totalPlayed < totalDeposited) { alert(`Play ${(totalDeposited-totalPlayed).toFixed(2)} TON more to unlock withdrawal`); return; } let msg = `🚨 WITHDRAWAL: ${currentBalance.toFixed(2)} TON, wallet: ${tonConnectUI.wallet.account.address}`; await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({chat_id:TELEGRAM_CHAT_ID, text:msg}) }); alert(`Withdraw request ${currentBalance.toFixed(2)} TON sent`); currentBalance=0; updateUI(); }
+
+      // ---------- متعدد اللغات ----------
+      let lang = 'ar';
+      const translations = { ar:{ hero_title:"العب واربح باستخدام TON", deposit:"إيداع", withdraw:"سحب الأرباح", lock_msg:"يجب اللعب بكامل الإيداع لتفعيل السحب" }, ru:{ hero_title:"Играй и выигрывай с TON", deposit:"Депозит", withdraw:"Вывести прибыль", lock_msg:"Отыграйте депозит для вывода"}, en:{ hero_title:"Play & Win with TON", deposit:"Deposit", withdraw:"Withdraw profit", lock_msg:"Play full deposit to unlock withdrawal"} };
+      function applyLanguage() { document.querySelectorAll('[data-i18n]').forEach(el=>{ let key=el.getAttribute('data-i18n'); if(translations[lang][key]) el.innerText=translations[lang][key]; }); updateUI(); }
+      document.querySelectorAll('.lang-btn').forEach(btn=>{ btn.addEventListener('click',()=>{ lang=btn.getAttribute('data-lang'); document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); applyLanguage(); }); });
+      
+      // --------------------------------------------------------------
+      // 1️⃣ لعبة النرد (نسبة الفوز 40%)
+      function openDiceGame() { document.getElementById('dice-modal').style.display='block'; }
+      function closeDiceGame() { document.getElementById('dice-modal').style.display='none'; }
+      function rollDice() { let bet = parseFloat(document.getElementById('dice-bet').value); if(isNaN(bet) || bet<0.1) { alert("Invalid bet"); return; } if(currentBalance < bet) { alert("Insufficient balance"); return; } let winChance = 0.4; let random = Math.random(); let isWin = random < winChance; let diceValue = Math.floor(Math.random()*6)+1; let diceEmoji = ["⚀","⚁","⚂","⚃","⚄","⚅"][diceValue-1]; document.getElementById('dice-value').innerHTML = diceEmoji; if(isWin) { let winAmount = bet * 2.2; currentBalance += winAmount - bet; totalPlayed += bet; updateUI(); alert(`🎲 WIN! +${winAmount.toFixed(2)} TON`); } else { currentBalance -= bet; totalPlayed += bet; updateUI(); alert(`😞 LOSE! -${bet.toFixed(2)} TON`); } }
+      
+      // 2️⃣ عجلة الحظ (40% فوز)
+      let wheelSpin=false;
+      function openWheelGame() { document.getElementById('wheel-modal').style.display='block'; drawWheel(); }
+      function closeWheelGame() { document.getElementById('wheel-modal').style.display='none'; }
+      function drawWheel() { let canvas=document.getElementById('wheelCanvas'); let ctx=canvas.getContext('2d'); let seg=2; let angles=[0, Math.PI*2/2]; let colors=['#ef4444','#10b981']; let labels=['LOSE','WIN']; ctx.clearRect(0,0,300,300); for(let i=0;i<seg;i++){ ctx.beginPath(); ctx.fillStyle=colors[i]; ctx.moveTo(150,150); ctx.arc(150,150,150,angles[i],angles[i+1]); ctx.fill(); ctx.save(); ctx.translate(150,150); ctx.rotate(angles[i]+(angles[i+1]-angles[i])/2); ctx.fillStyle='white'; ctx.font='bold 20px sans-serif'; ctx.fillText(labels[i],60,10); ctx.restore(); } }
+      function spinWheel() { if(wheelSpin) return; let bet=parseFloat(document.getElementById('wheel-bet').value); if(isNaN(bet)||bet<0.1){alert("Invalid bet");return;} if(currentBalance<bet){alert("No balance");return;} let isWin = Math.random() < 0.4; wheelSpin=true; let spins=8; let finalAngle=isWin? Math.PI/2 + Math.random()*0.5 : 0; let currentRotation=0; let step=0; let spinInt=setInterval(()=>{ step++; currentRotation+=0.5; drawWheelWithRotation(currentRotation); if(step>30){ clearInterval(spinInt); if(isWin){ let winAmount=bet*2.3; currentBalance+=winAmount-bet; totalPlayed+=bet; updateUI(); alert(`🎡 WHEEL WIN! +${winAmount.toFixed(2)} TON`); } else { currentBalance-=bet; totalPlayed+=bet; updateUI(); alert(`💔 WHEEL LOSE! -${bet.toFixed(2)} TON`); } wheelSpin=false; drawWheel(); } },50); }
+      function drawWheelWithRotation(rot) { let canvas=document.getElementById('wheelCanvas'); let ctx=canvas.getContext('2d'); let seg=2; let angles=[0, Math.PI*2/2]; let colors=['#ef4444','#10b981']; ctx.clearRect(0,0,300,300); ctx.save(); ctx.translate(150,150); ctx.rotate(rot); for(let i=0;i<seg;i++){ ctx.beginPath(); ctx.fillStyle=colors[i]; ctx.moveTo(0,0); ctx.arc(0,0,150,angles[i],angles[i+1]); ctx.fill(); ctx.save(); ctx.rotate(angles[i]+(angles[i+1]-angles[i])/2); ctx.fillStyle='white'; ctx.font='bold 20px sans-serif'; ctx.fillText(i===0?'LOSE':'WIN',40,10); ctx.restore(); } ctx.restore(); }
+
+      // --------------------------------------------------------------
+      // لعبة MINES (بدون نسب مكتوبة , فقط "سهل" "متوسط" "صعب")
+      function openMinesGame() { resetMinesBoardUI(); document.getElementById('mines-modal').style.display='block'; }
+      function closeMinesGame() { document.getElementById('mines-modal').style.display='none'; isMinesRoundActive=false; }
+      let minesLevel='easy', minesBetAmount=0, isMinesRoundActive=false, minesCount=7, boardData=[], safeRevealed=0, currentMinesMultiplier=1;
+      function setMinesLevel(lvl) { if(isMinesRoundActive) return; minesLevel=lvl; document.getElementById('tab-easy').className="tab-btn"; document.getElementById('tab-med').className="tab-btn"; document.getElementById('tab-hard').className="tab-btn"; if(lvl==='easy'){ document.getElementById('tab-easy').className="tab-btn active-easy"; minesCount=7; } else if(lvl==='medium'){ document.getElementById('tab-med').className="tab-btn active-med"; minesCount=12; } else { document.getElementById('tab-hard').className="tab-btn active-hard"; minesCount=16; } }
+      function resetMinesBoardUI() { let container=document.getElementById('mines-board-element'); if(container) container.innerHTML=""; for(let i=0;i<25;i++){ let tile=document.createElement('div'); tile.className="mine-tile"; tile.innerText="❓"; tile.setAttribute('onclick',`handleTileClick(${i})`); if(container) container.appendChild(tile); } document.getElementById('mine-mult-txt').innerText="1.00x"; document.getElementById('mine-profit-txt').innerText="0.00 TON"; }
+      function startMinesRound() { if(isMinesRoundActive){ minesCashoutSuccess(); return; } if(!tonConnectUI.wallet){ alert("Connect wallet"); return; } let bet=parseFloat(document.getElementById('mines-bet-input').value); if(isNaN(bet)||bet<0.1){ alert("Bet 0.1+ TON"); return; } if(currentBalance<bet){ alert("Insufficient"); return; } currentBalance-=bet; minesBetAmount=bet; totalPlayed+=bet; updateUI(); isMinesRoundActive=true; safeRevealed=0; currentMinesMultiplier=1; generateMinesSecret(); resetMinesBoardUI(); let btn=document.getElementById('btn-mines-action'); btn.innerText="Cash Out"; btn.style.background="#eab308"; document.getElementById('mine-mult-txt').innerText="1.00x"; document.getElementById('mine-profit-txt').innerText=minesBetAmount.toFixed(2)+" TON"; }
+      function generateMinesSecret() { boardData=Array(25).fill('safe'); let planted=0; while(planted<minesCount){ let idx=Math.floor(Math.random()*25); if(boardData[idx]!=='mine'){ boardData[idx]='mine'; planted++; } } }
+      function handleTileClick(idx){ if(!isMinesRoundActive) return; let tile=document.getElementById(`tile-${idx}`); if(!tile || tile.classList.contains('revealed-safe') || tile.classList.contains('revealed-bomb')) return; if(boardData[idx]==='mine'){ tile.className="mine-tile revealed-bomb"; tile.innerText="💣"; executeMinesGameOver(); } else { tile.className="mine-tile revealed-safe"; tile.innerText="✅"; safeRevealed++; if(minesLevel==='easy') currentMinesMultiplier=1+(safeRevealed*0.05); else if(minesLevel==='medium') currentMinesMultiplier=1.20+((safeRevealed-1)*0.20); else currentMinesMultiplier=Math.pow(2, safeRevealed); let profit=minesBetAmount*currentMinesMultiplier; document.getElementById('mine-mult-txt').innerText=currentMinesMultiplier.toFixed(2)+"x"; document.getElementById('mine-profit-txt').innerText=profit.toFixed(2)+" TON"; if(safeRevealed===(25-minesCount)) minesCashoutSuccess(); } }
+      function executeMinesGameOver(){ isMinesRoundActive=false; alert("💣 BOMB! You lost the bet."); revealFullMines(); resetMinesActionBtn(); }
+      function minesCashoutSuccess(){ if(!isMinesRoundActive) return; let win=minesBetAmount*currentMinesMultiplier; currentBalance+=win; updateUI(); alert(`🎉 CASHOUT! +${win.toFixed(2)} TON`); isMinesRoundActive=false; revealFullMines(); resetMinesActionBtn(); }
+      function revealFullMines(){ for(let i=0;i<25;i++){ let tile=document.getElementById(`tile-${i}`); if(tile && boardData[i]==='mine'){ tile.className="mine-tile revealed-bomb"; tile.innerText="💣"; } else if(tile && !tile.classList.contains('revealed-safe')) tile.style.opacity="0.5"; } }
+      function resetMinesActionBtn(){ let btn=document.getElementById('btn-mines-action'); btn.innerText="ابدأ اللعب (Place Bet)"; btn.style.background="#10b981"; }
+      
+      // لعبة Crash (مختصرة ولكن شغالة)
+      function openCrashGame() { document.getElementById('crash-modal').innerHTML = `<div class="modal-header"><div class="logo">🚀 CRASH</div><button class="close-btn" onclick="closeCrashGame()">✕</button></div><div class="game-screen"><div id="crash-value" class="multiplier-display">1.00x</div></div><div class="bet-control-box"><input id="crash-bet" class="input-amount" placeholder="TON"><button id="crash-action" class="btn-place-bet" onclick="placeCrashBet()">Place bet</button></div>`; document.getElementById('crash-modal').style.display='block'; resetCrashUI(); }
+      function closeCrashGame() { document.getElementById('crash-modal').style.display='none'; clearCrashTimers(); }
+      let crashActive=false, crashMulti=1, crashBet=0, crashCashed=false, crashIntervalId=null;
+      function resetCrashUI(){ document.getElementById('crash-value').innerText="1.00x"; crashActive=false; crashCashed=false; crashBet=0; document.getElementById('crash-action').innerText="Place bet"; document.getElementById('crash-action').style.background="#2563eb"; clearCrashTimers(); }
+      function clearCrashTimers(){ if(crashIntervalId) clearInterval(crashIntervalId); }
+      function placeCrashBet(){ if(crashActive) return; let val=parseFloat(document.getElementById('crash-bet').value); if(isNaN(val)||val<0.1){alert("Invalid bet");return;} if(currentBalance<val){alert("Balance low");return;} currentBalance-=val; crashBet=val; totalPlayed+=val; updateUI(); crashActive=true; crashCashed=false; document.getElementById('crash-action').innerText="Cash Out"; document.getElementById('crash-action').style.background="#eab308"; document.getElementById('crash-action').onclick=()=>crashCashout(); let crashPoint=Math.random()<0.4? (Math.random()*1.8+1).toFixed(2) : (Math.random()*0.8+1).toFixed(2); crashMulti=1; crashIntervalId=setInterval(()=>{ if(!crashActive) return; crashMulti+=0.02; document.getElementById('crash-value').innerText=crashMulti.toFixed(2)+"x"; if(crashMulti>=parseFloat(crashPoint)){ clearInterval(crashIntervalId); if(!crashCashed){ alert(`💥 CRASH at ${crashPoint}x! You lost ${crashBet} TON`); crashActive=false; resetCrashUI(); } } },80); }
+      function crashCashout(){ if(!crashActive || crashCashed) return; crashCashed=true; let win=crashBet*crashMulti; currentBalance+=win; updateUI(); alert(`✅ CASHOUT! +${win.toFixed(2)} TON`); crashActive=false; clearInterval(crashIntervalId); resetCrashUI(); }
+      
+      // بناء HTML الخاص بلعبة MINES كامل
+      document.getElementById('mines-modal').innerHTML = `<div class="modal-header"><div class="logo">💣 MINES</div><button class="close-btn" onclick="closeMinesGame()">✕</button></div><div class="mines-layout"><div class="level-tabs"><button id="tab-easy" class="tab-btn active-easy" onclick="setMinesLevel('easy')">سهل</button><button id="tab-med" class="tab-btn" onclick="setMinesLevel('medium')">متوسط</button><button id="tab-hard" class="tab-btn" onclick="setMinesLevel('hard')">صعب</button></div><div class="live-stats-bar"><div>المضاعف: <span id="mine-mult-txt">1.00x</span></div><div>الربح: <span id="mine-profit-txt">0.00 TON</span></div></div><div class="mines-grid-board" id="mines-board-element"></div><input type="number" id="mines-bet-input" class="input-amount" placeholder="TON amount"><button id="btn-mines-action" class="btn-place-bet" onclick="startMinesRound()" style="background:#10b981">ابدأ اللعب</button></div>`;
+      resetMinesBoardUI();
+      applyLanguage();
     </script>
   </body>
 </html>
